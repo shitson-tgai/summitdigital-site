@@ -128,6 +128,11 @@ app.get('/check', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'check.html'));
 });
 
+// Blog content service page
+app.get('/content', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'content.html'));
+});
+
 // Blog posts
 app.get('/blog/free-website-audit-checklist', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'blog', 'free-website-audit-checklist.html'));
