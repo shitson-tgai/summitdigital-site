@@ -52,6 +52,11 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res)
   res.json({ received: true });
 });
 
+// Clean redirect for payment link
+app.get('/order', (req, res) => {
+  res.redirect(302, 'https://buy.stripe.com/5kQbJ31P11fj7yZgbjes000');
+});
+
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
