@@ -128,6 +128,11 @@ app.get('/check', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'check.html'));
 });
 
+// Blog posts
+app.get('/blog/free-website-audit-checklist', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'blog', 'free-website-audit-checklist.html'));
+});
+
 // Catch-all: serve index.html for SPA-like routing
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
