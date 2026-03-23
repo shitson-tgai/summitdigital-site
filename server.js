@@ -54,7 +54,7 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res)
 
 // Clean redirect for payment link
 app.get('/order', (req, res) => {
-  res.redirect(302, 'https://buy.stripe.com/5kQbJ31P11fj7yZgbjes000');
+  res.redirect(302, 'https://buy.stripe.com/7sYeVfdxJ8HL4mN2ktes003');
 });
 
 // Free quick check API
@@ -113,7 +113,7 @@ app.post('/api/quick-check', express.json(), async (req, res) => {
       freePreview: freeIssues,
       moreIssues: hiddenCount,
       score: Math.max(20, 100 - (issues.length * 12)),
-      orderLink: 'https://buy.stripe.com/5kQbJ31P11fj7yZgbjes000'
+      orderLink: 'https://buy.stripe.com/7sYeVfdxJ8HL4mN2ktes003'
     });
   } catch (err) {
     res.status(500).json({ error: `Could not scan site: ${err.message}` });
