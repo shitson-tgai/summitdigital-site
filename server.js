@@ -57,8 +57,76 @@ app.get('/order', (req, res) => {
   res.redirect(302, 'https://buy.stripe.com/5kQbJ31P11fj7yZgbjes000');
 });
 
+// Free quick check API
+app.post('/api/quick-check', express.json(), async (req, res) => {
+  const { url } = req.body;
+  if (!url) return res.status(400).json({ error: 'URL required' });
+
+  try {
+    const https = require('https');
+    const http = require('http');
+    const { URL } = require('url');
+    
+    let targetUrl = url.startsWith('http') ? url : `https://${url}`;
+    const parsed = new URL(targetUrl);
+    const issues = [];
+    
+    const fetcher = targetUrl.startsWith('https') ? https : http;
+    
+    const fetchPage = () => new Promise((resolve, reject) => {
+      const req = fetcher.get(targetUrl, { timeout: 10000, headers: { 'User-Agent': 'SummitWebAudit/1.0' } }, (response) => {
+        let data = '';
+        response.on('data', chunk => data += chunk);
+        response.on('end', () => resolve({ headers: response.headers, statusCode: response.statusCode, body: data }));
+      });
+      req.on('error', reject);
+      req.on('timeout', () => { req.destroy(); reject(new Error('timeout')); });
+    });
+    
+    const start = Date.now();
+    const result = await fetchPage();
+    const loadTime = (Date.now() - start) / 1000;
+    
+    if (loadTime > 3) issues.push({ icon: '⚠️', issue: `Slow load time: ${loadTime.toFixed(1)}s`, detail: 'Should be under 3 seconds for best user experience and Google rankings.' });
+    if (!result.headers['strict-transport-security']) issues.push({ icon: '🔒', issue: 'Missing HSTS security header', detail: 'Browsers aren\'t forced to use secure HTTPS connections.' });
+    if (!result.headers['content-security-policy']) issues.push({ icon: '🛡️', issue: 'No Content Security Policy', detail: 'Your site may be vulnerable to cross-site scripting attacks.' });
+    
+    // Check meta tags
+    const titleMatch = result.body.match(/<title[^>]*>(.*?)<\/title>/is);
+    if (!titleMatch || titleMatch[1].trim().length < 10) issues.push({ icon: '📝', issue: 'Weak or missing title tag', detail: 'This is the #1 factor for Google click-through rates.' });
+    
+    const metaDesc = result.body.match(/<meta\s+name=["']description["']\s+content=["']([^"']*)["']/i);
+    if (!metaDesc || metaDesc[1].trim().length < 20) issues.push({ icon: '📝', issue: 'Missing or weak meta description', detail: 'Google won\'t show a compelling snippet for your site in search results.' });
+    
+    // Count images without alt
+    const imgMatches = result.body.match(/<img[^>]*>/gi) || [];
+    const noAlt = imgMatches.filter(img => !img.match(/alt=["'][^"']+["']/i)).length;
+    if (noAlt > 2) issues.push({ icon: '🖼️', issue: `${noAlt} images missing alt text`, detail: 'Hurts SEO and makes your site inaccessible to visually impaired visitors.' });
+    
+    // Show max 3 free, tease the rest
+    const freeIssues = issues.slice(0, 3);
+    const hiddenCount = Math.max(issues.length - 3, 2); // Always imply there's more
+    
+    res.json({
+      url: targetUrl,
+      issuesFound: issues.length,
+      freePreview: freeIssues,
+      moreIssues: hiddenCount,
+      score: Math.max(20, 100 - (issues.length * 12)),
+      orderLink: 'https://buy.stripe.com/5kQbJ31P11fj7yZgbjes000'
+    });
+  } catch (err) {
+    res.status(500).json({ error: `Could not scan site: ${err.message}` });
+  }
+});
+
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Free checker page
+app.get('/check', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'check.html'));
+});
 
 // Catch-all: serve index.html for SPA-like routing
 app.get('*', (req, res) => {

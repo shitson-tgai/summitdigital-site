@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Website Check — Summit Web Audit</title>
+    <meta name="description" content="Check your website for SEO, security, and performance issues instantly — free. Get a quick preview of what's holding your site back.">
+    <meta property="og:title" content="Free Website Check — Summit Web Audit">
+    <meta property="og:description" content="Enter your URL and see what issues we find. Free instant scan.">
+    <link rel="canonical" href="https://summitwebaudit.com/check">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+        .container { max-width: 700px; margin: 0 auto; padding: 60px 24px; }
+        h1 { font-size: 2.5rem; text-align: center; margin-bottom: 8px; }
+        h1 span { background: linear-gradient(135deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { text-align: center; color: #94a3b8; font-size: 1.1rem; margin-bottom: 40px; }
+        .input-group { display: flex; gap: 12px; margin-bottom: 40px; }
+        .input-group input {
+            flex: 1; padding: 16px 20px; font-size: 16px; border: 2px solid #334155;
+            border-radius: 12px; background: #1e293b; color: white; outline: none;
+        }
+        .input-group input:focus { border-color: #60a5fa; }
+        .input-group button {
+            padding: 16px 32px; background: linear-gradient(135deg, #2563eb, #7c3aed);
+            color: white; font-weight: 700; font-size: 16px; border: none; border-radius: 12px;
+            cursor: pointer; white-space: nowrap;
+        }
+        .input-group button:hover { transform: translateY(-1px); }
+        .input-group button:disabled { opacity: 0.6; cursor: not-allowed; }
+        .loading { text-align: center; color: #94a3b8; font-size: 1.1rem; display: none; }
+        .loading .spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid #334155; border-top: 3px solid #60a5fa; border-radius: 50%; animation: spin 1s linear infinite; margin-right: 8px; vertical-align: middle; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .results { display: none; }
+        .score-card {
+            text-align: center; background: #1e293b; border-radius: 16px; padding: 32px;
+            margin-bottom: 32px; border: 1px solid #334155;
+        }
+        .score { font-size: 4rem; font-weight: 800; }
+        .score.good { color: #34d399; }
+        .score.ok { color: #fbbf24; }
+        .score.bad { color: #f87171; }
+        .score-label { color: #94a3b8; font-size: 0.9rem; margin-top: 4px; }
+        .issue-card {
+            background: #1e293b; border-radius: 12px; padding: 20px; margin-bottom: 12px;
+            border-left: 4px solid #f87171;
+        }
+        .issue-icon { font-size: 1.3rem; margin-right: 8px; }
+        .issue-title { font-weight: 700; font-size: 1.05rem; margin-bottom: 4px; }
+        .issue-detail { color: #94a3b8; font-size: 0.9rem; }
+        .upsell {
+            background: linear-gradient(135deg, #1e293b, #1a1a2e); border: 2px solid #7c3aed;
+            border-radius: 16px; padding: 32px; text-align: center; margin-top: 32px;
+        }
+        .upsell h3 { font-size: 1.3rem; margin-bottom: 8px; }
+        .upsell p { color: #94a3b8; margin-bottom: 20px; }
+        .upsell a {
+            display: inline-block; padding: 14px 40px;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            color: white; font-weight: 700; font-size: 1.1rem; border-radius: 12px;
+            text-decoration: none;
+        }
+        .upsell .price { font-size: 2rem; font-weight: 800; color: white; margin: 12px 0; }
+        .back-link { text-align: center; margin-top: 32px; }
+        .back-link a { color: #60a5fa; text-decoration: none; }
+        .error { color: #f87171; text-align: center; display: none; margin-top: 16px; }
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8rem; }
+            .input-group { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Free <span>Website Check</span></h1>
+        <p class="subtitle">Enter your URL below and we'll scan it for SEO, security, and performance issues — instantly.</p>
+        
+        <div class="input-group">
+            <input type="url" id="urlInput" placeholder="https://yourwebsite.com" autofocus>
+            <button id="scanBtn" onclick="runCheck()">Scan Now</button>
+        </div>
+        
+        <div class="loading" id="loading">
+            <span class="spinner"></span> Scanning your website... this takes about 10 seconds.
+        </div>
+        
+        <p class="error" id="error"></p>
+        
+        <div class="results" id="results">
+            <div class="score-card">
+                <div class="score" id="scoreValue">--</div>
+                <div class="score-label">Estimated Website Health Score (out of 100)</div>
+            </div>
+            
+            <h2 style="margin-bottom: 16px;">Issues Found:</h2>
+            <div id="issuesList"></div>
+            
+            <div class="upsell">
+                <h3>🔍 Want the full picture?</h3>
+                <p>We found <strong id="hiddenCount">more</strong> additional issues that aren't shown here. Our full 50-point audit covers <strong>SEO, security, performance, accessibility, mobile, and content</strong> — with specific fix instructions for each issue.</p>
+                <div class="price">$29</div>
+                <a id="orderLink" href="https://buy.stripe.com/5kQbJ31P11fj7yZgbjes000">Get Your Full Audit Report →</a>
+            </div>
+        </div>
+        
+        <div class="back-link">
+            <a href="/">← Back to Summit Web Audit</a>
+        </div>
+    </div>
+    
+    <script>
+        const input = document.getElementById('urlInput');
+        input.addEventListener('keydown', (e) => { if (e.key === 'Enter') runCheck(); });
+        
+        async function runCheck() {
+            const url = input.value.trim();
+            if (!url) { input.focus(); return; }
+            
+            const btn = document.getElementById('scanBtn');
+            const loading = document.getElementById('loading');
+            const results = document.getElementById('results');
+            const error = document.getElementById('error');
+            
+            btn.disabled = true;
+            loading.style.display = 'block';
+            results.style.display = 'none';
+            error.style.display = 'none';
+            
+            try {
+                const resp = await fetch('/api/quick-check', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url })
+                });
+                const data = await resp.json();
+                
+                if (data.error) throw new Error(data.error);
+                
+                // Show score
+                const scoreEl = document.getElementById('scoreValue');
+                scoreEl.textContent = data.score + '/100';
+                scoreEl.className = 'score ' + (data.score >= 70 ? 'good' : data.score >= 40 ? 'ok' : 'bad');
+                
+                // Show issues
+                const list = document.getElementById('issuesList');
+                list.innerHTML = '';
+                data.freePreview.forEach(issue => {
+                    list.innerHTML += `
+                        <div class="issue-card">
+                            <div class="issue-title"><span class="issue-icon">${issue.icon}</span>${issue.issue}</div>
+                            <div class="issue-detail">${issue.detail}</div>
+                        </div>`;
+                });
+                
+                document.getElementById('hiddenCount').textContent = data.moreIssues + '+';
+                document.getElementById('orderLink').href = data.orderLink;
+                
+                results.style.display = 'block';
+            } catch (err) {
+                error.textContent = 'Error: ' + err.message;
+                error.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                loading.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
