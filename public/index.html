@@ -37,6 +37,19 @@
             -webkit-background-clip: text; 
             -webkit-text-fill-color: transparent; 
         }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+        .nav-link {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-link:hover { color: white; }
         .nav-cta {
             padding: 8px 20px;
             background: linear-gradient(135deg, #2563eb, #7c3aed);
@@ -283,10 +296,11 @@
 <body>
     <nav class="nav">
         <div class="nav-logo">⚡ Summit <span>Web Audit</span></div>
-        <div style="display: flex; gap: 20px; align-items: center;">
-            <a href="/check" style="color: #94a3b8; text-decoration: none; font-size: 14px;">Free Check</a>
-            <a href="/content" style="color: #94a3b8; text-decoration: none; font-size: 14px;">Blog Posts</a>
-            <a href="https://buy.stripe.com/7sYeVfdxJ8HL4mN2ktes003" class="nav-cta">Get Your Audit</a>
+        <div class="nav-links">
+            <a href="/check" class="nav-link">Free Check</a>
+            <a href="/blog" class="nav-link">Blog</a>
+            <a href="/content" class="nav-link">Content Service</a>
+            <a href="/check" class="nav-cta">Get Your Audit — $9</a>
         </div>
     </nav>
 
