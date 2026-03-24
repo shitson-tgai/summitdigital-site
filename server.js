@@ -78,40 +78,21 @@ app.post('/api/quick-check', express.json(), async (req, res) => {
   if (!url) return res.status(400).json({ error: 'URL required' });
 
   try {
-    const https = require('https');
-    const http = require('http');
+    const fetch = require('node-fetch');
     const { URL } = require('url');
     
     let targetUrl = url.startsWith('http') ? url : `https://${url}`;
     const parsed = new URL(targetUrl);
     const issues = [];
     
-    const fetcher = targetUrl.startsWith('https') ? https : http;
-    
-    const fetchPage = (fetchUrl, redirects) => new Promise((resolve, reject) => {
-      const rcount = redirects || 0;
-      if (rcount > 3) return reject(new Error('Too many redirects'));
-      const useHttps = fetchUrl && fetchUrl.startsWith('https');
-      const f = useHttps ? https : http;
-      const req = f.get(fetchUrl, { timeout: 10000, rejectUnauthorized: false, headers: { 'User-Agent': 'SummitWebAudit/1.0' } }, (response) => {
-        if ([301, 302, 303, 307, 308].includes(response.statusCode) && response.headers.location) {
-          let loc = response.headers.location;
-          if (loc && loc.startsWith('/')) {
-            const u = new URL(fetchUrl);
-            loc = u.origin + loc;
-          }
-          return fetchPage(loc, rcount + 1).then(resolve).catch(reject);
-        }
-        let data = '';
-        response.on('data', chunk => data += chunk);
-        response.on('end', () => resolve({ headers: response.headers, statusCode: response.statusCode, body: data }));
-      });
-      req.on('error', reject);
-      req.on('timeout', () => { req.destroy(); reject(new Error('timeout')); });
-    });
-    
     const start = Date.now();
-    const result = await fetchPage();
+    const response = await fetch(targetUrl, {
+      timeout: 10000,
+      follow: 5,
+      headers: { 'User-Agent': 'SummitWebAudit/1.0' }
+    });
+    const body = await response.text();
+    const result = { headers: Object.fromEntries(response.headers.entries()), statusCode: response.status, body };
     const loadTime = (Date.now() - start) / 1000;
     
     if (loadTime > 3) issues.push({ icon: '⚠️', issue: `Slow load time: ${loadTime.toFixed(1)}s`, detail: 'Should be under 3 seconds for best user experience and Google rankings.' });
