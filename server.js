@@ -15,6 +15,7 @@ const PORT = process.env.PORT || 3000;
 const DATA_DIR = fs.existsSync('/data') ? '/data' : __dirname;
 const ANALYTICS_FILE = path.join(DATA_DIR, 'analytics.csv');
 const LEADS_FILE = path.join(DATA_DIR, 'leads.csv');
+const SCANS_FILE = path.join(DATA_DIR, 'scans.csv');
 console.log(`Data directory: ${DATA_DIR} (persistent: ${fs.existsSync('/data')})`);
 app.use((req, res, next) => {
   // Only log GET requests to pages (not API calls, assets, etc.)
@@ -153,13 +154,21 @@ app.post('/api/quick-check', express.json(), async (req, res) => {
     // Show max 3 free, tease the rest
     const freeIssues = issues.slice(0, 3);
     const hiddenCount = Math.max(issues.length - 3, 2); // Always imply there's more
-    
+    const score = Math.max(15, 100 - (issues.length * 7));
+
+    // Log every scan for warm lead tracking
+    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '';
+    const referer = req.headers.referer || '';
+    const scanLine = `${new Date().toISOString()},${targetUrl},${score},${issues.length},${ip.split(',')[0].trim()},${referer}\n`;
+    fs.appendFile(SCANS_FILE, scanLine, () => {});
+    console.log(`SCAN: ${targetUrl} | score: ${score} | issues: ${issues.length}`);
+
     res.json({
       url: targetUrl,
       issuesFound: issues.length,
       freePreview: freeIssues,
       moreIssues: hiddenCount,
-      score: Math.max(15, 100 - (issues.length * 7)),
+      score,
       orderLink: 'https://buy.stripe.com/7sYeVfdxJ8HL4mN2ktes003'
     });
   } catch (err) {
@@ -318,6 +327,40 @@ app.post('/inbound', express.json(), async (req, res) => {
   res.json({ received: true });
 });
 
+// Internal API: get scan log (protected by simple key)
+app.get('/api/scans', (req, res) => {
+  const key = req.query.key;
+  if (key !== process.env.INTERNAL_API_KEY) return res.status(403).json({ error: 'unauthorized' });
+  try {
+    const data = fs.readFileSync(SCANS_FILE, 'utf8');
+    const lines = data.trim().split('\n').filter(l => l);
+    const scans = lines.map(l => {
+      const [timestamp, url, score, issues, ip, referer] = l.split(',');
+      return { timestamp, url, score, issues, ip, referer };
+    });
+    res.json({ count: scans.length, scans });
+  } catch (e) {
+    res.json({ count: 0, scans: [] });
+  }
+});
+
+// Internal API: get leads log (protected by simple key)
+app.get('/api/leads', (req, res) => {
+  const key = req.query.key;
+  if (key !== process.env.INTERNAL_API_KEY) return res.status(403).json({ error: 'unauthorized' });
+  try {
+    const data = fs.readFileSync(LEADS_FILE, 'utf8');
+    const lines = data.trim().split('\n').filter(l => l);
+    const leads = lines.map(l => {
+      const parts = l.split(',');
+      return { timestamp: parts[0], email: parts[1], url: parts[2], score: parts[3], status: parts[4] };
+    });
+    res.json({ count: leads.length, leads });
+  } catch (e) {
+    res.json({ count: 0, leads: [] });
+  }
+});
+
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -353,6 +396,15 @@ app.get('/blog/5-website-mistakes-costing-customers', (req, res) => {
 });
 app.get('/blog/is-your-medical-website-hipaa-compliant', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'blog', 'is-your-medical-website-hipaa-compliant.html'));
+});
+
+// Block common vulnerability probes
+app.use((req, res, next) => {
+  const blocked = ['.env', 'wp-login', 'wp-admin', 'xmlrpc', 'wlwmanifest', '.git', '.sql', 'phpmyadmin'];
+  if (blocked.some(b => req.path.toLowerCase().includes(b))) {
+    return res.status(404).send('Not found');
+  }
+  next();
 });
 
 // Quick analytics stats endpoint (internal use)
