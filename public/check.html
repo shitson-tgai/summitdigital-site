@@ -116,7 +116,13 @@
                 <p>We found <strong id="hiddenCount">more</strong> additional issues that aren't shown here. Our full 50-point audit covers <strong>SEO, security, performance, accessibility, mobile, and content</strong> — with specific fix instructions for each issue.</p>
                 <div class="price">$9</div>
                 <p style="color:#94a3b8; font-size:0.85rem; margin-bottom: 16px;"><s style="color:#64748b;">$29</s> — Intro price for a limited time</p>
-                <a id="orderLink" href="https://buy.stripe.com/7sYeVfdxJ8HL4mN2ktes003">Get Your Full Audit Report →</a>
+                
+                <div id="orderForm">
+                    <input type="email" id="orderEmail" placeholder="Your email (for delivery)" style="width:100%; padding:14px 20px; font-size:16px; border:2px solid #334155; border-radius:12px; background:#1e293b; color:white; outline:none; margin-bottom:10px; box-sizing:border-box;">
+                    <input type="url" id="orderUrl" placeholder="Website to audit (https://...)" style="width:100%; padding:14px 20px; font-size:16px; border:2px solid #334155; border-radius:12px; background:#1e293b; color:white; outline:none; margin-bottom:16px; box-sizing:border-box;">
+                    <button onclick="startOrder()" id="orderBtn" style="display:inline-block; padding:14px 40px; background:linear-gradient(135deg, #2563eb, #7c3aed); color:white; font-weight:700; font-size:1.1rem; border-radius:12px; border:none; cursor:pointer; width:100%;">Get Your Full Audit Report →</button>
+                    <p id="orderError" style="display:none; color:#f87171; text-align:center; margin-top:8px; font-size:0.9rem;"></p>
+                </div>
             </div>
         </div>
         
@@ -194,8 +200,12 @@
                 });
                 
                 document.getElementById('hiddenCount').textContent = data.moreIssues + '+';
-                document.getElementById('orderLink').href = data.orderLink;
                 lastScanData = data;
+                // Pre-fill order form URL from scan
+                document.getElementById('orderUrl').value = data.url || url;
+                // Pre-fill email if they already entered it
+                const capturedEmail = document.getElementById('emailInput').value.trim();
+                if (capturedEmail) document.getElementById('orderEmail').value = capturedEmail;
                 
                 results.style.display = 'block';
             } catch (err) {
@@ -204,6 +214,49 @@
             } finally {
                 btn.disabled = false;
                 loading.style.display = 'none';
+            }
+        }
+        async function startOrder() {
+            const email = document.getElementById('orderEmail').value.trim();
+            const url = document.getElementById('orderUrl').value.trim();
+            const errEl = document.getElementById('orderError');
+            const btn = document.getElementById('orderBtn');
+            errEl.style.display = 'none';
+            
+            if (!email || !email.includes('@')) {
+                errEl.textContent = 'Please enter a valid email address.';
+                errEl.style.display = 'block';
+                document.getElementById('orderEmail').focus();
+                return;
+            }
+            if (!url) {
+                errEl.textContent = 'Please enter the website you want audited.';
+                errEl.style.display = 'block';
+                document.getElementById('orderUrl').focus();
+                return;
+            }
+            
+            btn.disabled = true;
+            btn.textContent = 'Creating checkout...';
+            
+            try {
+                const resp = await fetch('/api/create-checkout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, url })
+                });
+                const data = await resp.json();
+                if (data.error) throw new Error(data.error);
+                if (data.checkoutUrl) {
+                    window.location.href = data.checkoutUrl;
+                } else {
+                    throw new Error('No checkout URL returned');
+                }
+            } catch (e) {
+                errEl.textContent = 'Error: ' + e.message + '. Try again.';
+                errEl.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'Get Your Full Audit Report →';
             }
         }
     </script>

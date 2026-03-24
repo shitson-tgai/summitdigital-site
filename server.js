@@ -120,6 +120,42 @@ app.post('/api/quick-check', express.json(), async (req, res) => {
   }
 });
 
+// Create Stripe Checkout Session with pre-filled email (captures lead even if they abandon)
+app.post('/api/create-checkout', express.json(), async (req, res) => {
+  const { email, url } = req.body;
+  if (!email || !email.includes('@')) return res.status(400).json({ error: 'Valid email required' });
+
+  console.log(`CHECKOUT INITIATED: ${email} | site: ${url}`);
+
+  // Log lead immediately (before they even complete checkout)
+  const fs = require('fs');
+  const leadLine = `${new Date().toISOString()},${email},${url || ''},checkout_initiated,pre-payment\n`;
+  fs.appendFileSync(path.join(__dirname, 'leads.csv'), leadLine);
+
+  try {
+    const session = await stripe.checkout.sessions.create({
+      mode: 'payment',
+      customer_email: email,
+      line_items: [{
+        price: 'price_1TECTeRz4FTeJoj7NbHBkNty', // $9 intro price
+        quantity: 1,
+      }],
+      metadata: {
+        website_url: url,
+        source: 'free_checker_upsell'
+      },
+      success_url: `https://summitwebaudit.com/thank-you?email=${encodeURIComponent(email)}&url=${encodeURIComponent(url || '')}`,
+      cancel_url: 'https://summitwebaudit.com/check',
+    });
+    
+    console.log(`Stripe session created: ${session.id} for ${email}`);
+    res.json({ checkoutUrl: session.url });
+  } catch (err) {
+    console.error('Stripe checkout error:', err.message);
+    res.status(500).json({ error: 'Could not create checkout. Please try again.' });
+  }
+});
+
 // Email lead capture from free checker
 app.post('/api/capture-lead', express.json(), async (req, res) => {
   const { email, url, score, issues } = req.body;
@@ -243,6 +279,11 @@ app.get('/blog', (req, res) => {
 
 app.get('/blog/5-website-mistakes-costing-customers', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'blog', '5-website-mistakes-costing-customers.html'));
+});
+
+// Thank you page after purchase
+app.get('/thank-you', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'thank-you.html'));
 });
 
 // Catch-all: serve index.html for SPA-like routing
