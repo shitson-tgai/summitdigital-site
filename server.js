@@ -289,25 +289,30 @@ app.post('/inbound', express.json(), async (req, res) => {
     return res.json({ received: true, skipped: true });
   }
 
-  // Auto-reply
-  try {
-    const resendKey = process.env.RESEND_API_KEY;
-    if (resendKey && from) {
-      const fetch = require('node-fetch');
-      await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          from: 'Steve at Summit Web Audit <steve@summitwebaudit.com>',
-          to: from,
-          subject: `Re: ${data.subject || 'Your message'}`,
-          html: `<p>Hey! Thanks for reaching out. I got your message and will get back to you within 24 hours.</p><p>In the meantime, you can check your website health score for free at <a href="https://summitwebaudit.com/check">summitwebaudit.com/check</a>.</p><p>— Steve<br>Summit Web Audit</p>`
-        })
-      });
-      console.log(`Auto-reply sent to ${from}`);
+  // Auto-reply ONLY to new conversations (not replies)
+  const isReply = subject.startsWith('re:');
+  if (!isReply) {
+    try {
+      const resendKey = process.env.RESEND_API_KEY;
+      if (resendKey && from) {
+        const fetch = require('node-fetch');
+        await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            from: 'Steve at Summit Web Audit <steve@summitwebaudit.com>',
+            to: from,
+            subject: `Re: ${data.subject || 'Your message'}`,
+            html: `<p>Hey! Thanks for reaching out. I got your message and will get back to you within 24 hours.</p><p>In the meantime, you can check your website health score for free at <a href="https://summitwebaudit.com/check">summitwebaudit.com/check</a>.</p><p>— Steve<br>Summit Web Audit</p>`
+          })
+        });
+        console.log(`Auto-reply sent to ${from}`);
+      }
+    } catch (err) {
+      console.error('Auto-reply error:', err.message);
     }
-  } catch (err) {
-    console.error('Auto-reply error:', err.message);
+  } else {
+    console.log(`Skipping auto-reply (is a reply): from=${from} subject=${subject}`);
   }
 
   res.json({ received: true });
