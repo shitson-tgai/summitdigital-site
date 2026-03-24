@@ -4,7 +4,19 @@ const { execSync, spawn } = require('child_process');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
+const fs = require('fs');
 const PORT = process.env.PORT || 3000;
+
+// Simple analytics — log page views
+const ANALYTICS_FILE = path.join(__dirname, 'analytics.csv');
+app.use((req, res, next) => {
+  // Only log GET requests to pages (not API calls, assets, etc.)
+  if (req.method === 'GET' && !req.path.match(/\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|map)$/)) {
+    const line = `${new Date().toISOString()},${req.path},${req.query.utm_source || ''},${req.headers.referer || ''},${(req.headers['user-agent'] || '').substring(0, 100)}\n`;
+    fs.appendFile(ANALYTICS_FILE, line, () => {});
+  }
+  next();
+});
 
 // Stripe webhook needs raw body
 app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
@@ -279,6 +291,24 @@ app.get('/blog', (req, res) => {
 
 app.get('/blog/5-website-mistakes-costing-customers', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'blog', '5-website-mistakes-costing-customers.html'));
+});
+
+// Quick analytics stats endpoint (internal use)
+app.get('/api/stats', (req, res) => {
+  try {
+    if (!fs.existsSync(ANALYTICS_FILE)) return res.json({ views: 0, message: 'No data yet' });
+    const lines = fs.readFileSync(ANALYTICS_FILE, 'utf8').trim().split('\n').filter(l => l);
+    const today = new Date().toISOString().split('T')[0];
+    const todayLines = lines.filter(l => l.startsWith(today));
+    const pages = {};
+    todayLines.forEach(l => {
+      const p = l.split(',')[1] || '/';
+      pages[p] = (pages[p] || 0) + 1;
+    });
+    res.json({ total_views: lines.length, today_views: todayLines.length, today_pages: pages });
+  } catch (e) {
+    res.json({ error: e.message });
+  }
 });
 
 // Thank you page after purchase
