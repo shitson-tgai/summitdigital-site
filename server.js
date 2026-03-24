@@ -110,6 +110,41 @@ app.post('/api/quick-check', express.json(), async (req, res) => {
     const imgMatches = result.body.match(/<img[^>]*>/gi) || [];
     const noAlt = imgMatches.filter(img => !img.match(/alt=["'][^"']+["']/i)).length;
     if (noAlt > 2) issues.push({ icon: '🖼️', issue: `${noAlt} images missing alt text`, detail: 'Hurts SEO and makes your site inaccessible to visually impaired visitors.' });
+
+    // Additional checks for more realistic scoring
+    if (!result.headers['x-frame-options'] && !result.headers['content-security-policy']?.includes('frame-ancestors')) {
+      issues.push({ icon: '🛡️', issue: 'Missing X-Frame-Options header', detail: 'Your site could be embedded in malicious iframes (clickjacking risk).' });
+    }
+    if (!result.headers['x-content-type-options']) {
+      issues.push({ icon: '🔒', issue: 'Missing X-Content-Type-Options header', detail: 'Browsers might misinterpret file types, opening door to attacks.' });
+    }
+    if (!result.headers['referrer-policy']) {
+      issues.push({ icon: '🔒', issue: 'No Referrer-Policy set', detail: 'Your URLs may leak to third parties when visitors click external links.' });
+    }
+    const ogTitle = result.body.match(/<meta\s+property=["']og:title["']/i);
+    const ogDesc = result.body.match(/<meta\s+property=["']og:description["']/i);
+    const ogImage = result.body.match(/<meta\s+property=["']og:image["']/i);
+    if (!ogTitle || !ogDesc || !ogImage) {
+      issues.push({ icon: '📱', issue: 'Incomplete Open Graph tags', detail: 'Your site won\'t look great when shared on social media (Facebook, LinkedIn, etc).' });
+    }
+    const canonical = result.body.match(/<link\s+rel=["']canonical["']/i);
+    if (!canonical) {
+      issues.push({ icon: '🔗', issue: 'Missing canonical URL tag', detail: 'Google may index duplicate versions of your pages, diluting your SEO.' });
+    }
+    const viewport = result.body.match(/<meta\s+name=["']viewport["']/i);
+    if (!viewport) {
+      issues.push({ icon: '📱', issue: 'Missing viewport meta tag', detail: 'Your site may not display properly on mobile devices.' });
+    }
+    const h1Match = result.body.match(/<h1[^>]*>/gi);
+    if (!h1Match) {
+      issues.push({ icon: '📝', issue: 'No H1 heading found', detail: 'Every page needs one clear H1 heading for SEO and accessibility.' });
+    } else if (h1Match.length > 1) {
+      issues.push({ icon: '📝', issue: `Multiple H1 headings (${h1Match.length})`, detail: 'Best practice is exactly one H1 per page for clear content hierarchy.' });
+    }
+    const structuredData = result.body.match(/<script\s+type=["']application\/ld\+json["']/i);
+    if (!structuredData) {
+      issues.push({ icon: '🔍', issue: 'No structured data (Schema.org)', detail: 'You\'re missing out on rich snippets in Google search results.' });
+    }
     
     // Show max 3 free, tease the rest
     const freeIssues = issues.slice(0, 3);
@@ -120,7 +155,7 @@ app.post('/api/quick-check', express.json(), async (req, res) => {
       issuesFound: issues.length,
       freePreview: freeIssues,
       moreIssues: hiddenCount,
-      score: Math.max(20, 100 - (issues.length * 12)),
+      score: Math.max(15, 100 - (issues.length * 7)),
       orderLink: 'https://buy.stripe.com/7sYeVfdxJ8HL4mN2ktes003'
     });
   } catch (err) {
