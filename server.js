@@ -88,15 +88,19 @@ app.post('/api/quick-check', express.json(), async (req, res) => {
     
     const fetcher = targetUrl.startsWith('https') ? https : http;
     
-    const fetchPage = (fetchUrl, redirects = 0) => new Promise((resolve, reject) => {
-      if (redirects > 3) return reject(new Error('Too many redirects'));
-      const f = fetchUrl.startsWith('https') ? https : http;
+    const fetchPage = (fetchUrl, redirects) => new Promise((resolve, reject) => {
+      const rcount = redirects || 0;
+      if (rcount > 3) return reject(new Error('Too many redirects'));
+      const useHttps = fetchUrl && fetchUrl.startsWith('https');
+      const f = useHttps ? https : http;
       const req = f.get(fetchUrl, { timeout: 10000, rejectUnauthorized: false, headers: { 'User-Agent': 'SummitWebAudit/1.0' } }, (response) => {
-        // Follow redirects
         if ([301, 302, 303, 307, 308].includes(response.statusCode) && response.headers.location) {
           let loc = response.headers.location;
-          if (loc.startsWith('/')) loc = new URL(fetchUrl).origin + loc;
-          return resolve(fetchPage(loc, redirects + 1));
+          if (loc && loc.startsWith('/')) {
+            const u = new URL(fetchUrl);
+            loc = u.origin + loc;
+          }
+          return fetchPage(loc, rcount + 1).then(resolve).catch(reject);
         }
         let data = '';
         response.on('data', chunk => data += chunk);
