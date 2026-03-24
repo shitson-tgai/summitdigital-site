@@ -120,6 +120,101 @@ app.post('/api/quick-check', express.json(), async (req, res) => {
   }
 });
 
+// Email lead capture from free checker
+app.post('/api/capture-lead', express.json(), async (req, res) => {
+  const { email, url, score, issues } = req.body;
+  if (!email || !email.includes('@')) return res.status(400).json({ error: 'Valid email required' });
+
+  console.log(`LEAD CAPTURED: ${email} | site: ${url} | score: ${score} | issues: ${issues}`);
+
+  // Send results email via Resend
+  try {
+    const resendKey = process.env.RESEND_API_KEY;
+    if (resendKey) {
+      const fetch = require('node-fetch');
+      await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          from: 'Steve at Summit Web Audit <steve@summitwebaudit.com>',
+          to: email,
+          subject: `Your Website Score: ${score || '??'}/100 — Here's What to Fix`,
+          html: `
+            <div style="font-family: -apple-system, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+              <h2 style="color: #1e293b;">Your Website Health Report</h2>
+              <p>Hey there,</p>
+              <p>Thanks for running your site through our free checker. Here's a quick summary:</p>
+              <div style="background: #f1f5f9; border-radius: 12px; padding: 20px; text-align: center; margin: 20px 0;">
+                <div style="font-size: 48px; font-weight: 800; color: ${(score >= 70) ? '#16a34a' : (score >= 40) ? '#ca8a04' : '#dc2626'};">${score || '??'}/100</div>
+                <div style="color: #64748b; margin-top: 4px;">Website Health Score for ${url || 'your site'}</div>
+              </div>
+              <p>We found <strong>${issues || 'several'} issues</strong> during the scan. Here are 3 quick wins you can do right now:</p>
+              <ol>
+                <li><strong>Check your page speed</strong> — Run your site through <a href="https://pagespeed.web.dev">Google PageSpeed</a> and aim for 60+ on mobile.</li>
+                <li><strong>Add missing meta descriptions</strong> — Every page needs a unique, compelling 150-character description.</li>
+                <li><strong>Verify your SSL certificate</strong> — Make sure the padlock icon shows on every page, not just the homepage.</li>
+              </ol>
+              <p>Want the full picture? Our comprehensive 50-point audit covers everything — SEO, security, performance, accessibility, mobile, and content — with specific fix instructions for each issue.</p>
+              <div style="text-align: center; margin: 24px 0;">
+                <a href="https://buy.stripe.com/7sYeVfdxJ8HL4mN2ktes003" style="display: inline-block; padding: 14px 36px; background: #2563eb; color: white; font-weight: 700; border-radius: 8px; text-decoration: none;">Get Your Full Audit — $9 (Intro Price)</a>
+              </div>
+              <p style="color: #64748b; font-size: 0.85rem;">Questions? Just reply to this email. I read every one.</p>
+              <p>— Steve<br>Summit Web Audit</p>
+            </div>
+          `
+        })
+      });
+      console.log(`Results email sent to ${email}`);
+    }
+  } catch (err) {
+    console.error('Failed to send lead email:', err.message);
+  }
+
+  // Log to a leads file for tracking
+  const fs = require('fs');
+  const leadLine = `${new Date().toISOString()},${email},${url || ''},${score || ''},${issues || ''}\n`;
+  fs.appendFileSync(path.join(__dirname, 'leads.csv'), leadLine);
+
+  res.json({ ok: true });
+});
+
+// Inbound email webhook (Resend)
+app.post('/inbound', express.json(), async (req, res) => {
+  const data = req.body;
+  console.log('Inbound email received:', JSON.stringify(data).substring(0, 500));
+
+  // Loop prevention
+  const from = data.from || '';
+  if (from.includes('summitwebaudit.com') || from.includes('noreply') || from.includes('mailer-daemon') ||
+      (data.subject || '').toLowerCase().startsWith('automatic reply')) {
+    console.log('Skipping auto-reply to prevent loop');
+    return res.json({ received: true, skipped: true });
+  }
+
+  // Auto-reply
+  try {
+    const resendKey = process.env.RESEND_API_KEY;
+    if (resendKey && from) {
+      const fetch = require('node-fetch');
+      await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          from: 'Steve at Summit Web Audit <steve@summitwebaudit.com>',
+          to: from,
+          subject: `Re: ${data.subject || 'Your message'}`,
+          html: `<p>Hey! Thanks for reaching out. I got your message and will get back to you within 24 hours.</p><p>In the meantime, you can check your website health score for free at <a href="https://summitwebaudit.com/check">summitwebaudit.com/check</a>.</p><p>— Steve<br>Summit Web Audit</p>`
+        })
+      });
+      console.log(`Auto-reply sent to ${from}`);
+    }
+  } catch (err) {
+    console.error('Auto-reply error:', err.message);
+  }
+
+  res.json({ received: true });
+});
+
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -140,6 +235,10 @@ app.get('/blog/free-website-audit-checklist', (req, res) => {
 
 app.get('/blog/why-small-business-website-security-matters', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'blog', 'why-small-business-website-security-matters.html'));
+});
+
+app.get('/blog/5-website-mistakes-costing-customers', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'blog', '5-website-mistakes-costing-customers.html'));
 });
 
 // Catch-all: serve index.html for SPA-like routing

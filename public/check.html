@@ -64,6 +64,11 @@
         .back-link { text-align: center; margin-top: 32px; }
         .back-link a { color: #60a5fa; text-decoration: none; }
         .error { color: #f87171; text-align: center; display: none; margin-top: 16px; }
+        .email-capture {
+            background: linear-gradient(135deg, #1e293b, #172033); border: 1px solid #334155;
+            border-radius: 16px; padding: 28px; margin-top: 32px; margin-bottom: 8px;
+        }
+        .email-capture h3 { font-size: 1.2rem; margin-bottom: 8px; }
         @media (max-width: 600px) {
             h1 { font-size: 1.8rem; }
             .input-group { flex-direction: column; }
@@ -95,11 +100,23 @@
             <h2 style="margin-bottom: 16px;">Issues Found:</h2>
             <div id="issuesList"></div>
             
+            <div class="email-capture" id="emailCapture">
+                <h3>📧 Get these results emailed to you</h3>
+                <p style="color: #94a3b8; margin-bottom: 16px;">We'll send you a copy of this scan plus 3 bonus tips specific to your site — free.</p>
+                <div class="input-group" style="margin-bottom: 0;">
+                    <input type="email" id="emailInput" placeholder="you@yourbusiness.com">
+                    <button id="emailBtn" onclick="captureEmail()">Send My Results</button>
+                </div>
+                <p class="email-success" id="emailSuccess" style="display:none; color: #34d399; text-align: center; margin-top: 12px;">✅ Sent! Check your inbox.</p>
+                <p class="email-error" id="emailError" style="display:none; color: #f87171; text-align: center; margin-top: 12px;"></p>
+            </div>
+
             <div class="upsell">
                 <h3>🔍 Want the full picture?</h3>
                 <p>We found <strong id="hiddenCount">more</strong> additional issues that aren't shown here. Our full 50-point audit covers <strong>SEO, security, performance, accessibility, mobile, and content</strong> — with specific fix instructions for each issue.</p>
-                <div class="price">$29</div>
-                <a id="orderLink" href="https://buy.stripe.com/5kQbJ31P11fj7yZgbjes000">Get Your Full Audit Report →</a>
+                <div class="price">$9</div>
+                <p style="color:#94a3b8; font-size:0.85rem; margin-bottom: 16px;"><s style="color:#64748b;">$29</s> — Intro price for a limited time</p>
+                <a id="orderLink" href="https://buy.stripe.com/7sYeVfdxJ8HL4mN2ktes003">Get Your Full Audit Report →</a>
             </div>
         </div>
         
@@ -111,6 +128,30 @@
     <script>
         const input = document.getElementById('urlInput');
         input.addEventListener('keydown', (e) => { if (e.key === 'Enter') runCheck(); });
+        let lastScanData = null;
+        
+        async function captureEmail() {
+            const email = document.getElementById('emailInput').value.trim();
+            if (!email || !email.includes('@')) { document.getElementById('emailInput').focus(); return; }
+            const btn = document.getElementById('emailBtn');
+            const success = document.getElementById('emailSuccess');
+            const err = document.getElementById('emailError');
+            btn.disabled = true; success.style.display = 'none'; err.style.display = 'none';
+            try {
+                const resp = await fetch('/api/capture-lead', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, url: lastScanData?.url, score: lastScanData?.score, issues: lastScanData?.issuesFound })
+                });
+                const data = await resp.json();
+                if (data.error) throw new Error(data.error);
+                success.style.display = 'block';
+                document.getElementById('emailCapture').style.borderColor = '#22c55e';
+            } catch (e) {
+                err.textContent = 'Could not send — try again.';
+                err.style.display = 'block';
+            } finally { btn.disabled = false; }
+        }
         
         async function runCheck() {
             const url = input.value.trim();
@@ -154,6 +195,7 @@
                 
                 document.getElementById('hiddenCount').textContent = data.moreIssues + '+';
                 document.getElementById('orderLink').href = data.orderLink;
+                lastScanData = data;
                 
                 results.style.display = 'block';
             } catch (err) {
