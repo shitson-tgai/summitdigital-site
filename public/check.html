@@ -97,18 +97,19 @@
                 <div class="score-label">Estimated Website Health Score (out of 100)</div>
             </div>
             
-            <h2 style="margin-bottom: 16px;">Issues Found:</h2>
+            <h2 style="margin-bottom: 16px;">Top Issue Found:</h2>
             <div id="issuesList"></div>
             
-            <div class="email-capture" id="emailCapture">
-                <h3>📧 Get these results emailed to you</h3>
-                <p style="color: #94a3b8; margin-bottom: 16px;">We'll send you a copy of this scan plus 3 bonus tips specific to your site — free.</p>
+            <div class="email-capture" id="emailCapture" style="background:#1e293b; border:2px solid #7c3aed; border-radius:16px; padding:28px; text-align:center; margin: 24px 0;">
+                <h3 style="margin-bottom:4px;">🔓 <span id="lockedCount">2 more</span> issues found</h3>
+                <p style="color: #94a3b8; margin-bottom: 16px;">Enter your email to unlock all issues + get 3 bonus tips specific to your site — <strong>free</strong>.</p>
                 <div class="input-group" style="margin-bottom: 0;">
                     <input type="email" id="emailInput" placeholder="you@yourbusiness.com">
-                    <button id="emailBtn" onclick="captureEmail()">Send My Results</button>
+                    <button id="emailBtn" onclick="captureEmail()">Unlock All Issues — Free</button>
                 </div>
-                <p class="email-success" id="emailSuccess" style="display:none; color: #34d399; text-align: center; margin-top: 12px;">✅ Sent! Check your inbox.</p>
+                <p class="email-success" id="emailSuccess" style="display:none; color: #34d399; text-align: center; margin-top: 12px;">✅ Sent! Check your inbox for all issues + tips.</p>
                 <p class="email-error" id="emailError" style="display:none; color: #f87171; text-align: center; margin-top: 12px;"></p>
+                <div id="unlockedIssues" style="display:none; text-align:left; margin-top:20px;"></div>
             </div>
 
             <div class="upsell">
@@ -153,6 +154,16 @@
                 if (data.error) throw new Error(data.error);
                 success.style.display = 'block';
                 document.getElementById('emailCapture').style.borderColor = '#22c55e';
+                // Reveal locked issues
+                if (window._lockedIssues && window._lockedIssues.length > 0) {
+                    const unlockedDiv = document.getElementById('unlockedIssues');
+                    let html = '<h3 style="margin-bottom:12px; color:#f8fafc;">Unlocked Issues:</h3>';
+                    window._lockedIssues.forEach(issue => {
+                        html += `<div class="issue-card"><div class="issue-title"><span class="issue-icon">${issue.icon}</span>${issue.issue}</div><div class="issue-detail">${issue.detail}</div></div>`;
+                    });
+                    unlockedDiv.innerHTML = html;
+                    unlockedDiv.style.display = 'block';
+                }
             } catch (e) {
                 err.textContent = 'Could not send — try again.';
                 err.style.display = 'block';
@@ -188,16 +199,21 @@
                 scoreEl.textContent = data.score + '/100';
                 scoreEl.className = 'score ' + (data.score >= 70 ? 'good' : data.score >= 40 ? 'ok' : 'bad');
                 
-                // Show issues
+                // Show only first issue free, gate rest behind email
                 const list = document.getElementById('issuesList');
                 list.innerHTML = '';
-                data.freePreview.forEach(issue => {
-                    list.innerHTML += `
+                if (data.freePreview.length > 0) {
+                    const first = data.freePreview[0];
+                    list.innerHTML = `
                         <div class="issue-card">
-                            <div class="issue-title"><span class="issue-icon">${issue.icon}</span>${issue.issue}</div>
-                            <div class="issue-detail">${issue.detail}</div>
+                            <div class="issue-title"><span class="issue-icon">${first.icon}</span>${first.issue}</div>
+                            <div class="issue-detail">${first.detail}</div>
                         </div>`;
-                });
+                }
+                // Store remaining issues for unlock
+                window._lockedIssues = data.freePreview.slice(1);
+                const lockedCount = data.freePreview.length - 1 + (data.moreIssues || 0);
+                document.getElementById('lockedCount').textContent = lockedCount + ' more';
                 
                 document.getElementById('hiddenCount').textContent = data.moreIssues + '+';
                 lastScanData = data;
