@@ -11,7 +11,11 @@ const fs = require('fs');
 const PORT = process.env.PORT || 3000;
 
 // Simple analytics — log page views
-const ANALYTICS_FILE = path.join(__dirname, 'analytics.csv');
+// Use persistent volume if available, fall back to local
+const DATA_DIR = fs.existsSync('/data') ? '/data' : __dirname;
+const ANALYTICS_FILE = path.join(DATA_DIR, 'analytics.csv');
+const LEADS_FILE = path.join(DATA_DIR, 'leads.csv');
+console.log(`Data directory: ${DATA_DIR} (persistent: ${fs.existsSync('/data')})`);
 app.use((req, res, next) => {
   // Only log GET requests to pages (not API calls, assets, etc.)
   if (req.method === 'GET' && !req.path.match(/\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|map)$/)) {
@@ -173,7 +177,7 @@ app.post('/api/create-checkout', express.json(), async (req, res) => {
   // Log lead immediately (before they even complete checkout)
   const fs = require('fs');
   const leadLine = `${new Date().toISOString()},${email},${url || ''},checkout_initiated,pre-payment\n`;
-  fs.appendFileSync(path.join(__dirname, 'leads.csv'), leadLine);
+  fs.appendFileSync(LEADS_FILE, leadLine);
 
   try {
     const session = await stripe.checkout.sessions.create({
@@ -258,7 +262,7 @@ app.post('/api/capture-lead', express.json(), async (req, res) => {
   // Log to a leads file for tracking
   const fs = require('fs');
   const leadLine = `${new Date().toISOString()},${email},${url || ''},${score || ''},${issues || ''}\n`;
-  fs.appendFileSync(path.join(__dirname, 'leads.csv'), leadLine);
+  fs.appendFileSync(LEADS_FILE, leadLine);
 
   res.json({ ok: true });
 });
