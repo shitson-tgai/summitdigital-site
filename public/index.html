@@ -61,7 +61,29 @@
             transition: transform 0.2s;
         }
         .nav-cta:hover { transform: translateY(-1px); }
-        
+
+        @media (max-width: 640px) {
+            .nav {
+                padding: 10px 16px;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .nav-links {
+                gap: 12px;
+                order: 3;
+                width: 100%;
+                justify-content: center;
+            }
+            .nav-cta {
+                padding: 6px 14px;
+                font-size: 13px;
+                white-space: nowrap;
+            }
+            .hero {
+                padding-top: 120px;
+            }
+        }
+
         .hero {
             min-height: 100vh;
             display: flex;
