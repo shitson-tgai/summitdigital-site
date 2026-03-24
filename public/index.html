@@ -64,15 +64,10 @@
 
         @media (max-width: 640px) {
             .nav {
-                padding: 10px 16px;
-                flex-wrap: wrap;
-                gap: 8px;
+                padding: 12px 16px;
             }
-            .nav-links {
-                gap: 12px;
-                order: 3;
-                width: 100%;
-                justify-content: center;
+            .nav-links .nav-link {
+                display: none;
             }
             .nav-cta {
                 padding: 6px 14px;
@@ -80,7 +75,13 @@
                 white-space: nowrap;
             }
             .hero {
-                padding-top: 120px;
+                padding-top: 100px;
+            }
+            .hero h1 {
+                font-size: clamp(28px, 8vw, 48px);
+            }
+            .hero .subtitle {
+                font-size: 16px;
             }
         }
 
