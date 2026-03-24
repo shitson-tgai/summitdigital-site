@@ -399,7 +399,11 @@
                 <div class="price">$9 <span style="font-size:20px;text-decoration:line-through;color:rgba(255,255,255,0.4)">$29</span></div>
                 <div class="price-note">Limited intro price · One-time payment · No subscription · Delivered in under 2 hours</div>
             </div>
-            <a href="https://buy.stripe.com/7sYeVfdxJ8HL4mN2ktes003" class="btn">Get Your Audit Report →</a>
+            <form id="hero-order-form" style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:500px;margin:0 auto;">
+                <input type="email" name="email" placeholder="Your email" required style="flex:1;min-width:200px;padding:14px 18px;border-radius:8px;border:none;font-size:16px;">
+                <input type="url" name="url" placeholder="https://yoursite.com" required style="flex:1;min-width:200px;padding:14px 18px;border-radius:8px;border:none;font-size:16px;">
+                <button type="submit" class="btn" style="width:100%;margin-top:4px;border:none;cursor:pointer;font-size:18px;">Get Your Audit Report — $9 →</button>
+            </form>
             <div class="trust-bar">
                 <div class="trust-item">✅ 50+ checks</div>
                 <div class="trust-item">⚡ Under 2 hours</div>
@@ -524,7 +528,11 @@
     <section class="cta-section">
         <h2>Stop guessing. Start fixing.</h2>
         <p>Most businesses lose traffic and revenue to website problems they don't even know about.</p>
-        <a href="https://buy.stripe.com/7sYeVfdxJ8HL4mN2ktes003" class="btn">Get Your Audit Report — $9 (Intro Price) →</a>
+        <form id="bottom-order-form" style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:500px;margin:0 auto;">
+            <input type="email" name="email" placeholder="Your email" required style="flex:1;min-width:200px;padding:14px 18px;border-radius:8px;border:1px solid #e2e8f0;font-size:16px;">
+            <input type="url" name="url" placeholder="https://yoursite.com" required style="flex:1;min-width:200px;padding:14px 18px;border-radius:8px;border:1px solid #e2e8f0;font-size:16px;">
+            <button type="submit" class="btn" style="width:100%;margin-top:4px;border:none;cursor:pointer;font-size:18px;">Get Your Audit Report — $9 →</button>
+        </form>
         <div class="guarantee">
             <p>💯 <strong>100% Money-Back Guarantee.</strong> Not satisfied with your audit? Full refund, no questions asked.</p>
         </div>
@@ -533,5 +541,35 @@
     <footer>
         <p>© 2026 Summit Web Audit · <a href="mailto:steve@summitwebaudit.com">steve@summitwebaudit.com</a></p>
     </footer>
+    <script>
+    document.querySelectorAll('#hero-order-form, #bottom-order-form').forEach(form => {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = form.querySelector('button');
+            const origText = btn.textContent;
+            btn.textContent = 'Redirecting to checkout...';
+            btn.disabled = true;
+            try {
+                const email = form.querySelector('[name=email]').value;
+                const url = form.querySelector('[name=url]').value;
+                const res = await fetch('/api/create-checkout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, url })
+                });
+                const data = await res.json();
+                if (data.url) {
+                    window.location.href = data.url;
+                } else {
+                    throw new Error(data.error || 'Failed to create checkout');
+                }
+            } catch (err) {
+                btn.textContent = origText;
+                btn.disabled = false;
+                alert('Something went wrong. Please try again.');
+            }
+        });
+    });
+    </script>
 </body>
 </html>
