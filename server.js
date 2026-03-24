@@ -342,6 +342,9 @@ app.get('/blog', (req, res) => {
 app.get('/blog/5-website-mistakes-costing-customers', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'blog', '5-website-mistakes-costing-customers.html'));
 });
+app.get('/blog/is-your-medical-website-hipaa-compliant', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'blog', 'is-your-medical-website-hipaa-compliant.html'));
+});
 
 // Quick analytics stats endpoint (internal use)
 app.get('/api/stats', (req, res) => {

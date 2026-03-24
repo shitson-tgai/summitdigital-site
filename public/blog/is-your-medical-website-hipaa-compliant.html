@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Is Your Medical Practice Website HIPAA Compliant? A 2026 Checklist</title>
+    <meta name="description" content="Most medical practice websites violate HIPAA without knowing it. Use this checklist to find out if your site is putting patient data at risk — and how to fix it fast.">
+    <meta property="og:title" content="Is Your Medical Practice Website HIPAA Compliant?">
+    <meta property="og:description" content="Most medical practice websites violate HIPAA without knowing it. Here's how to check.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://summitwebaudit.com/blog/is-your-medical-website-hipaa-compliant">
+    <link rel="canonical" href="https://summitwebaudit.com/blog/is-your-medical-website-hipaa-compliant">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1f2937; line-height: 1.8; background: #fff; }
+        .nav { position: fixed; top: 0; width: 100%; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; z-index: 100; background: rgba(15,23,42,0.95); backdrop-filter: blur(10px); }
+        .nav-logo { font-size: 18px; font-weight: 700; color: white; text-decoration: none; }
+        .nav-logo span { background: linear-gradient(135deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-cta { padding: 8px 20px; background: linear-gradient(135deg, #2563eb, #7c3aed); color: white; font-weight: 600; font-size: 14px; border-radius: 8px; text-decoration: none; }
+        article { max-width: 720px; margin: 0 auto; padding: 100px 24px 60px; }
+        h1 { font-size: 36px; font-weight: 800; line-height: 1.2; margin-bottom: 16px; color: #0f172a; }
+        .meta { color: #64748b; font-size: 14px; margin-bottom: 32px; }
+        h2 { font-size: 24px; font-weight: 700; margin: 40px 0 16px; color: #0f172a; }
+        h3 { font-size: 20px; font-weight: 600; margin: 28px 0 12px; color: #1e293b; }
+        p { margin-bottom: 16px; font-size: 17px; color: #374151; }
+        ul, ol { margin: 0 0 20px 24px; }
+        li { margin-bottom: 8px; font-size: 17px; color: #374151; }
+        .warning-box { background: #fef2f2; border-left: 4px solid #dc2626; padding: 20px 24px; border-radius: 0 8px 8px 0; margin: 24px 0; }
+        .warning-box p { color: #991b1b; margin: 0; }
+        .tip-box { background: #f0fdf4; border-left: 4px solid #16a34a; padding: 20px 24px; border-radius: 0 8px 8px 0; margin: 24px 0; }
+        .tip-box p { color: #166534; margin: 0; }
+        .checklist { background: #f8fafc; border-radius: 12px; padding: 24px; margin: 24px 0; }
+        .checklist li { list-style: none; padding-left: 28px; position: relative; margin-bottom: 12px; }
+        .checklist li::before { content: '☐'; position: absolute; left: 0; font-size: 18px; }
+        .cta-box { background: linear-gradient(135deg, #0f172a, #1e293b); border-radius: 16px; padding: 32px; text-align: center; margin: 40px 0; color: white; }
+        .cta-box h3 { color: white; }
+        .cta-box p { color: rgba(255,255,255,0.7); }
+        .cta-box a { display: inline-block; padding: 14px 36px; background: linear-gradient(135deg, #2563eb, #7c3aed); color: white; font-weight: 700; border-radius: 8px; text-decoration: none; margin-top: 12px; }
+        .keep-reading { background: #f8fafc; border-radius: 12px; padding: 24px; margin-top: 48px; }
+        .keep-reading h3 { margin-top: 0; }
+        .keep-reading a { color: #2563eb; text-decoration: none; font-weight: 600; }
+        .keep-reading a:hover { text-decoration: underline; }
+        footer { padding: 40px 24px; text-align: center; color: #9ca3af; font-size: 13px; border-top: 1px solid #e5e7eb; }
+        footer a { color: #9ca3af; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <a href="/" class="nav-logo">⚡ Summit <span>Web Audit</span></a>
+        <div style="display:flex;gap:20px;align-items:center;">
+            <a href="/check" style="color:#94a3b8;text-decoration:none;font-size:14px;">Free Check</a>
+            <a href="/blog" style="color:#94a3b8;text-decoration:none;font-size:14px;">Blog</a>
+            <a href="/check" class="nav-cta">Get Your Audit — $9</a>
+        </div>
+    </nav>
+
+    <article>
+        <h1>Is Your Medical Practice Website HIPAA Compliant? A 2026 Checklist</h1>
+        <div class="meta">By Steve · March 24, 2026 · 8 min read</div>
+
+        <p>If you run a medical practice, dental office, chiropractic clinic, or any healthcare business — your website is almost certainly handling protected health information (PHI) in ways you haven't thought about.</p>
+
+        <p>And if it's not HIPAA compliant, you're exposed to fines of <strong>$100 to $50,000 per violation</strong>, up to $1.5 million per year.</p>
+
+        <div class="warning-box">
+            <p><strong>⚠️ The scary part:</strong> Most violations come from websites and online forms, not hacked medical records. A simple contact form that asks "What are your symptoms?" is collecting PHI — and if it's not encrypted and properly handled, it's a HIPAA violation.</p>
+        </div>
+
+        <h2>What Counts as PHI on a Website?</h2>
+        <p>Protected Health Information isn't just medical records. On a website, PHI includes:</p>
+        <ul>
+            <li><strong>Contact forms</strong> that ask about health conditions, symptoms, or reason for visit</li>
+            <li><strong>Appointment booking forms</strong> that collect patient names + health-related info</li>
+            <li><strong>Patient portals</strong> or login areas</li>
+            <li><strong>Live chat</strong> where patients discuss health concerns</li>
+            <li><strong>Email addresses</strong> collected in the context of healthcare services</li>
+            <li><strong>IP addresses</strong> combined with any of the above (yes, really)</li>
+        </ul>
+
+        <h2>The 10-Point Website HIPAA Checklist</h2>
+        <p>Run through this checklist for your practice's website. If you can't check every box, you have work to do.</p>
+
+        <div class="checklist">
+            <h3>🔒 Security Basics</h3>
+            <ul>
+                <li><strong>SSL/HTTPS on every page</strong> — Not just the homepage. Every single page, especially forms, must be served over HTTPS. Check for the padlock icon.</li>
+                <li><strong>HSTS header enabled</strong> — Forces browsers to always use HTTPS. Without it, a visitor could accidentally load the HTTP version and transmit data unencrypted.</li>
+                <li><strong>Content Security Policy (CSP)</strong> — Prevents malicious scripts from running on your site and stealing form data.</li>
+                <li><strong>Secure form handling</strong> — All forms that collect any patient info must submit data over encrypted connections to HIPAA-compliant servers.</li>
+            </ul>
+        </div>
+
+        <div class="checklist">
+            <h3>📋 Forms & Data Collection</h3>
+            <ul>
+                <li><strong>No PHI in URLs or query strings</strong> — If your form puts patient data in the URL bar (like ?name=John&condition=diabetes), that's a violation. Use POST requests, not GET.</li>
+                <li><strong>HIPAA-compliant form processor</strong> — Free form tools (Google Forms, Typeform, basic WordPress plugins) are NOT HIPAA compliant. You need a BAA (Business Associate Agreement) with your form provider.</li>
+                <li><strong>Data encryption at rest</strong> — Patient data stored on your server must be encrypted, not sitting in a plain text database.</li>
+            </ul>
+        </div>
+
+        <div class="checklist">
+            <h3>📊 Analytics & Tracking</h3>
+            <ul>
+                <li><strong>Google Analytics configured correctly</strong> — Standard GA4 can collect IP addresses alongside page visits, which becomes PHI in a healthcare context. You need IP anonymization enabled at minimum.</li>
+                <li><strong>No third-party tracking pixels on health-related pages</strong> — Facebook Pixel, Google Ads remarketing, and similar tools on pages where patients book appointments or fill forms may share PHI with third parties.</li>
+                <li><strong>Cookie consent</strong> — While not strictly HIPAA, it's best practice and may be required under state laws. Inform visitors about what you're tracking.</li>
+            </ul>
+        </div>
+
+        <div class="tip-box">
+            <p><strong>💡 Quick test:</strong> Open your website and look at the address bar. If you see "http://" instead of "https://" on ANY page — especially pages with forms — that's an immediate compliance issue. Fix it today.</p>
+        </div>
+
+        <h2>The Most Common Violations We See</h2>
+        <p>After auditing hundreds of small business websites, here are the HIPAA-related issues we find most often on medical practice sites:</p>
+
+        <ol>
+            <li><strong>Contact forms on HTTP pages</strong> — The form looks fine, but the page isn't encrypted. Every submission is sent in plain text.</li>
+            <li><strong>Missing security headers</strong> — No HSTS, no CSP, no X-Frame-Options. This is like leaving your office door unlocked overnight.</li>
+            <li><strong>Google Forms for patient intake</strong> — Google Forms is NOT HIPAA compliant. Google does not sign BAAs for their free products.</li>
+            <li><strong>Facebook Pixel on booking pages</strong> — You're literally sending patient appointment data to Facebook. This has led to real lawsuits.</li>
+            <li><strong>Outdated WordPress plugins</strong> — Old plugins with known vulnerabilities are a breach waiting to happen.</li>
+        </ol>
+
+        <h2>What To Do Next</h2>
+        <p>If your website failed any of the checks above, here's your priority order:</p>
+
+        <ol>
+            <li><strong>Enable HTTPS everywhere</strong> (today — free with Let's Encrypt)</li>
+            <li><strong>Add security headers</strong> (HSTS, CSP, X-Frame-Options — your web host can help)</li>
+            <li><strong>Audit your forms</strong> — Replace non-compliant form processors with HIPAA-compliant ones (JotForm HIPAA, Formstack, or custom solutions with BAAs)</li>
+            <li><strong>Review your analytics</strong> — Enable IP anonymization, remove tracking pixels from health-related pages</li>
+            <li><strong>Get a professional audit</strong> — A comprehensive review catches things you'll miss doing it yourself</li>
+        </ol>
+
+        <div class="cta-box">
+            <h3>Not Sure Where You Stand?</h3>
+            <p>Our website audit checks every security header, SSL configuration, and vulnerability on your site — with specific fix instructions for each issue found.</p>
+            <a href="/check">Run a Free Website Check →</a>
+            <p style="margin-top: 12px; font-size: 14px;">Or get the full 50-point audit for $9 (intro price)</p>
+        </div>
+
+        <h2>HIPAA Fines Are No Joke</h2>
+        <p>The Office for Civil Rights (OCR) has been increasingly aggressive about enforcement, especially for small practices that assume they're "too small to be noticed."</p>
+        <ul>
+            <li><strong>Tier 1:</strong> $100–$50,000 per violation (didn't know about it)</li>
+            <li><strong>Tier 2:</strong> $1,000–$50,000 per violation (reasonable cause)</li>
+            <li><strong>Tier 3:</strong> $10,000–$50,000 per violation (willful neglect, corrected)</li>
+            <li><strong>Tier 4:</strong> $50,000+ per violation (willful neglect, not corrected)</li>
+        </ul>
+        <p>Annual maximum: <strong>$1.5 million per violation category.</strong></p>
+        <p>Even Tier 1 adds up fast. If your contact form has been collecting unencrypted PHI for a year, every form submission could be a separate violation.</p>
+
+        <div class="keep-reading">
+            <h3>📚 Keep Reading</h3>
+            <ul style="list-style:none;padding:0;">
+                <li style="margin-bottom:8px;">→ <a href="/blog/free-website-audit-checklist">Free Website Audit Checklist for Small Businesses</a></li>
+                <li style="margin-bottom:8px;">→ <a href="/blog/5-website-mistakes-costing-customers">5 Website Mistakes Costing Your Small Business Customers</a></li>
+                <li style="margin-bottom:8px;">→ <a href="/check">Run a Free Website Health Check</a></li>
+            </ul>
+        </div>
+    </article>
+
+    <footer>
+        <p>© 2026 Summit Web Audit · <a href="mailto:steve@summitwebaudit.com">steve@summitwebaudit.com</a></p>
+    </footer>
+</body>
+</html>
