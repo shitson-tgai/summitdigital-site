@@ -237,6 +237,10 @@ app.get('/blog/why-small-business-website-security-matters', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'blog', 'why-small-business-website-security-matters.html'));
 });
 
+app.get('/blog', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'blog', 'index.html'));
+});
+
 app.get('/blog/5-website-mistakes-costing-customers', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'blog', '5-website-mistakes-costing-customers.html'));
 });
