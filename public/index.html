@@ -62,18 +62,70 @@
         }
         .nav-cta:hover { transform: translateY(-1px); }
 
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            z-index: 101;
+        }
+        .hamburger svg { width: 24px; height: 24px; stroke: white; stroke-width: 2; fill: none; }
+        .mobile-overlay {
+            display: none;
+        }
+
         @media (max-width: 640px) {
             .nav {
                 padding: 12px 16px;
             }
-            .nav-links .nav-link {
+            .nav-links {
                 display: none;
             }
-            .nav-cta {
-                padding: 6px 14px;
-                font-size: 13px;
-                white-space: nowrap;
+            .hamburger {
+                display: block;
             }
+            .mobile-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(15, 23, 42, 0.97);
+                z-index: 200;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 24px;
+            }
+            .mobile-overlay.open {
+                display: flex;
+            }
+            .mobile-overlay a {
+                color: white;
+                text-decoration: none;
+                font-size: 20px;
+                font-weight: 600;
+                padding: 12px 24px;
+                transition: opacity 0.2s;
+            }
+            .mobile-overlay a:hover { opacity: 0.7; }
+            .mobile-overlay .nav-cta {
+                margin-top: 8px;
+                padding: 12px 32px;
+                font-size: 16px;
+            }
+            .mobile-close {
+                position: absolute;
+                top: 16px;
+                right: 16px;
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 4px;
+            }
+            .mobile-close svg { width: 28px; height: 28px; stroke: white; stroke-width: 2; fill: none; }
             .hero {
                 padding-top: 100px;
             }
@@ -325,7 +377,19 @@
             <a href="/content" class="nav-link">Content Service</a>
             <a href="/check" class="nav-cta">Get Your Audit — $9</a>
         </div>
+        <button class="hamburger" onclick="document.getElementById('mobileMenu').classList.add('open')" aria-label="Open menu">
+            <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
     </nav>
+    <div class="mobile-overlay" id="mobileMenu">
+        <button class="mobile-close" onclick="document.getElementById('mobileMenu').classList.remove('open')" aria-label="Close menu">
+            <svg viewBox="0 0 24 24"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>
+        </button>
+        <a href="/check">Free Check</a>
+        <a href="/blog">Blog</a>
+        <a href="/content">Content Service</a>
+        <a href="/check" class="nav-cta">Get Your Audit — $9</a>
+    </div>
 
     <section class="hero">
         <div class="hero-content">
