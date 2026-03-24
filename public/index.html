@@ -558,8 +558,8 @@
                     body: JSON.stringify({ email, url })
                 });
                 const data = await res.json();
-                if (data.url) {
-                    window.location.href = data.url;
+                if (data.checkoutUrl || data.url) {
+                    window.location.href = data.checkoutUrl || data.url;
                 } else {
                     throw new Error(data.error || 'Failed to create checkout');
                 }
