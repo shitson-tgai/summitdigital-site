@@ -216,8 +216,14 @@ app.post('/api/capture-lead', express.json(), async (req, res) => {
         headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           from: 'Steve at Summit Web Audit <steve@summitwebaudit.com>',
+          reply_to: 'steve@summitwebaudit.com',
           to: email,
           subject: `Your Website Score: ${score || '??'}/100 — Here's What to Fix`,
+          headers: {
+            'List-Unsubscribe': '<mailto:steve@summitwebaudit.com?subject=unsubscribe>',
+            'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click'
+          },
+          text: `Your Website Health Report\n\nHey there,\n\nThanks for running your site through our free checker. Here's a quick summary:\n\nScore: ${score || '??'}/100 for ${url || 'your site'}\nIssues found: ${issues || 'several'}\n\n3 quick wins you can do right now:\n1. Check your page speed — Run your site through Google PageSpeed (https://pagespeed.web.dev) and aim for 60+ on mobile.\n2. Add missing meta descriptions — Every page needs a unique, compelling 150-character description.\n3. Verify your SSL certificate — Make sure the padlock icon shows on every page.\n\nWant the full picture? Get a comprehensive 50-point audit for $9 (intro price):\nhttps://summitwebaudit.com/check\n\nQuestions? Just reply to this email. I read every one.\n\n— Steve\nSummit Web Audit`,
           html: `
             <div style="font-family: -apple-system, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
               <h2 style="color: #1e293b;">Your Website Health Report</h2>
@@ -235,7 +241,7 @@ app.post('/api/capture-lead', express.json(), async (req, res) => {
               </ol>
               <p>Want the full picture? Our comprehensive 50-point audit covers everything — SEO, security, performance, accessibility, mobile, and content — with specific fix instructions for each issue.</p>
               <div style="text-align: center; margin: 24px 0;">
-                <a href="https://buy.stripe.com/7sYeVfdxJ8HL4mN2ktes003" style="display: inline-block; padding: 14px 36px; background: #2563eb; color: white; font-weight: 700; border-radius: 8px; text-decoration: none;">Get Your Full Audit — $9 (Intro Price)</a>
+                <a href="https://summitwebaudit.com/check" style="display: inline-block; padding: 14px 36px; background: #2563eb; color: white; font-weight: 700; border-radius: 8px; text-decoration: none;">Get Your Full Audit — $9 (Intro Price)</a>
               </div>
               <p style="color: #64748b; font-size: 0.85rem;">Questions? Just reply to this email. I read every one.</p>
               <p>— Steve<br>Summit Web Audit</p>
