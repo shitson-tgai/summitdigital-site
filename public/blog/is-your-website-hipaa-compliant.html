@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Is Your Website HIPAA Compliant? A Guide for Healthcare Businesses — Summit Web Audit</title>
+    <meta name="description" content="Most healthcare business websites violate HIPAA without knowing it. Contact forms, analytics, SSL — here's what to check and how to fix it.">
+    <meta property="og:title" content="Is Your Website HIPAA Compliant? A Guide for Healthcare Businesses">
+    <meta property="og:description" content="Most healthcare websites violate HIPAA without knowing it. Here's what to check.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://summitwebaudit.com/blog/is-your-website-hipaa-compliant">
+    <link rel="canonical" href="https://summitwebaudit.com/blog/is-your-website-hipaa-compliant">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f172a; color: #e2e8f0; line-height: 1.8; }
+        .article { max-width: 720px; margin: 0 auto; padding: 60px 24px; }
+        h1 { font-size: 2.2rem; margin-bottom: 16px; line-height: 1.3; }
+        h1 span { background: linear-gradient(135deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .meta { color: #64748b; margin-bottom: 40px; font-size: 0.9rem; }
+        h2 { font-size: 1.5rem; margin: 40px 0 16px; color: #f8fafc; }
+        h3 { font-size: 1.2rem; margin: 28px 0 12px; color: #f8fafc; }
+        p { margin-bottom: 20px; color: #cbd5e1; }
+        ul, ol { margin: 16px 0 24px 24px; color: #cbd5e1; }
+        ul li, ol li { margin-bottom: 8px; }
+        .warning-box { padding: 24px; background: #1e293b; border-radius: 12px; margin-bottom: 24px; border-left: 4px solid #f59e0b; }
+        .warning-box h3 { margin-top: 0; color: #fbbf24; }
+        .check-box { padding: 24px; background: #1e293b; border-radius: 12px; margin-bottom: 24px; border-left: 4px solid #22c55e; }
+        .check-box h3 { margin-top: 0; color: #34d399; }
+        .stat { font-size: 1.6rem; font-weight: 800; background: linear-gradient(135deg, #f59e0b, #ef4444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: block; margin-bottom: 8px; }
+        .cta-box {
+            background: linear-gradient(135deg, #1e293b, #1a1a2e); border: 2px solid #7c3aed;
+            border-radius: 16px; padding: 32px; text-align: center; margin: 40px 0;
+        }
+        .cta-box h3 { font-size: 1.3rem; margin-bottom: 12px; margin-top: 0; }
+        .cta-box p { color: #94a3b8; }
+        .cta-box a {
+            display: inline-block; padding: 14px 36px; margin-top: 16px;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            color: white; font-weight: 700; font-size: 1rem; border-radius: 12px;
+            text-decoration: none;
+        }
+        a { color: #60a5fa; }
+        @media (max-width: 600px) { h1 { font-size: 1.6rem; } }
+    </style>
+</head>
+<body>
+    <article class="article">
+        <h1>Is Your Website <span>HIPAA Compliant?</span></h1>
+        <p class="meta">Published March 24, 2026 · 7 min read · By Summit Web Audit</p>
+
+        <p>If you run a dental practice, chiropractic office, physical therapy clinic, med spa, or any healthcare-adjacent business — your website probably needs to comply with HIPAA. And there's a good chance it doesn't.</p>
+
+        <div class="warning-box">
+            <span class="stat">$1.5M+</span>
+            <p>The average HIPAA violation fine for small healthcare businesses. Even a single complaint about your website can trigger an investigation by the Office for Civil Rights (OCR).</p>
+        </div>
+
+        <p>HIPAA (the Health Insurance Portability and Accountability Act) doesn't just apply to patient records and billing. It applies to <strong>any system that collects, transmits, or stores protected health information (PHI)</strong> — and your website almost certainly does.</p>
+
+        <h2>Does HIPAA Apply to My Website?</h2>
+
+        <p>If your website does any of the following, HIPAA likely applies:</p>
+        <ul>
+            <li><strong>Contact forms</strong> where patients describe symptoms or conditions</li>
+            <li><strong>Online appointment scheduling</strong></li>
+            <li><strong>Patient intake forms</strong> or health questionnaires</li>
+            <li><strong>Patient portals</strong> or login areas</li>
+            <li><strong>Live chat</strong> where health information might be discussed</li>
+            <li><strong>Email collection</strong> for appointment reminders or newsletters</li>
+        </ul>
+
+        <p>Even a simple "Tell us about your concern" textarea on a contact form can collect PHI if a patient describes their health condition.</p>
+
+        <h2>The 7 Most Common Website HIPAA Violations</h2>
+
+        <h3>1. No SSL Certificate (or Mixed Content)</h3>
+        <p>HIPAA requires encryption of PHI in transit. If your website doesn't use HTTPS on every page — especially forms — you're violating the Security Rule. Mixed content (loading some resources over HTTP) also counts.</p>
+
+        <div class="check-box">
+            <h3>✅ How to Check</h3>
+            <p>Look for the padlock icon in your browser's address bar. Click it — does it say "Connection is secure"? If you see any warnings, you have a problem.</p>
+        </div>
+
+        <h3>2. Contact Forms Without Encryption</h3>
+        <p>Your contact form might use HTTPS for the page, but where does the data go? If submissions are emailed to a regular Gmail or Yahoo account (not a HIPAA-compliant email service), that's a violation.</p>
+
+        <h3>3. Google Analytics Tracking PHI</h3>
+        <p>Standard Google Analytics can capture URL parameters, search queries, and form data. If a patient's name, condition, or appointment details appear in any tracked URL, you're storing PHI on Google's servers — which aren't covered by a BAA (Business Associate Agreement).</p>
+
+        <div class="warning-box">
+            <h3>⚠️ This Is More Common Than You Think</h3>
+            <p>In 2023, the HHS warned that tracking technologies like Google Analytics and Meta Pixel on healthcare websites may constitute impermissible disclosures of PHI. Multiple health systems faced lawsuits for exactly this.</p>
+        </div>
+
+        <h3>4. No Business Associate Agreements (BAAs)</h3>
+        <p>Every third-party service that handles PHI needs a BAA. This includes:</p>
+        <ul>
+            <li>Your web hosting provider</li>
+            <li>Your email service (if patients email you)</li>
+            <li>Your appointment scheduling tool</li>
+            <li>Your CRM or patient management software</li>
+            <li>Your live chat provider</li>
+        </ul>
+        <p>If any of these vendors don't offer a BAA, you can't use them for anything involving patient information.</p>
+
+        <h3>5. Missing Privacy Policy</h3>
+        <p>HIPAA requires a Notice of Privacy Practices (NPP). Your website should have a clear, accessible privacy policy that explains how you collect, use, and protect health information. Many small practice websites either don't have one or use a generic template that doesn't address HIPAA.</p>
+
+        <h3>6. No Security Headers</h3>
+        <p>HIPAA's Security Rule requires "reasonable and appropriate" technical safeguards. Security headers like HSTS, Content Security Policy, and X-Frame-Options help protect your site from common attacks. Most small practice websites have none of these.</p>
+
+        <h3>7. Outdated Software</h3>
+        <p>Running an old version of WordPress, an outdated plugin, or an unpatched CMS is a security risk — and a HIPAA risk. The Security Rule requires you to protect against "reasonably anticipated threats" to ePHI.</p>
+
+        <h2>What to Do Right Now</h2>
+
+        <ol>
+            <li><strong>Audit your website</strong> for SSL, security headers, and form handling</li>
+            <li><strong>Review all third-party tools</strong> — do they offer BAAs?</li>
+            <li><strong>Check your forms</strong> — where does submitted data go?</li>
+            <li><strong>Update your privacy policy</strong> to include HIPAA-required disclosures</li>
+            <li><strong>Remove or configure analytics</strong> to exclude PHI from tracking</li>
+        </ol>
+
+        <div class="cta-box">
+            <h3>🏥 Free Website Health Check for Healthcare Businesses</h3>
+            <p>Our scanner checks SSL, security headers, and other technical issues that affect HIPAA compliance. It's not a full HIPAA audit, but it catches the most common technical violations in 30 seconds.</p>
+            <a href="/check?utm_source=blog&utm_medium=hipaa_post">Check Your Practice Website Free →</a>
+            <p style="margin-top: 16px; font-size: 0.85rem; color: #64748b;">No signup required. Results in 30 seconds.</p>
+        </div>
+
+        <h2>Resources</h2>
+        <ul>
+            <li><a href="https://www.hhs.gov/hipaa/for-professionals/security/guidance/index.html" target="_blank">HHS HIPAA Security Rule Guidance</a></li>
+            <li><a href="https://www.hhs.gov/hipaa/for-professionals/privacy/guidance/hipaa-online-tracking/index.html" target="_blank">HHS Guidance on Online Tracking Technologies</a></li>
+        </ul>
+
+        <h2>Keep Reading</h2>
+        <ul>
+            <li><a href="/blog/5-website-mistakes-costing-customers">5 Website Mistakes Costing Your Small Business Customers</a></li>
+            <li><a href="/blog/why-small-business-website-security-matters">Why Small Business Website Security Matters</a></li>
+            <li><a href="/blog/free-website-audit-checklist">Free Website Audit Checklist (2026)</a></li>
+        </ul>
+
+        <div style="text-align: center; margin-top: 32px;">
+            <a href="/blog">← All Blog Posts</a> · <a href="/">Summit Web Audit Home</a>
+        </div>
+    </article>
+</body>
+</html>

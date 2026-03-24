@@ -344,6 +344,10 @@ app.get('/blog', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'blog', 'index.html'));
 });
 
+app.get('/blog/is-your-website-hipaa-compliant', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'blog', 'is-your-website-hipaa-compliant.html'));
+});
+
 app.get('/blog/5-website-mistakes-costing-customers', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'blog', '5-website-mistakes-costing-customers.html'));
 });
