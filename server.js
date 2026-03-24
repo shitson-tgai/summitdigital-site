@@ -262,11 +262,20 @@ app.post('/inbound', express.json(), async (req, res) => {
   const data = req.body;
   console.log('Inbound email received:', JSON.stringify(data).substring(0, 500));
 
-  // Loop prevention
-  const from = data.from || '';
-  if (from.includes('summitwebaudit.com') || from.includes('noreply') || from.includes('mailer-daemon') ||
-      (data.subject || '').toLowerCase().startsWith('automatic reply')) {
-    console.log('Skipping auto-reply to prevent loop');
+  // Loop prevention — aggressive
+  const from = (data.from || '').toLowerCase();
+  const subject = (data.subject || '').toLowerCase();
+  const isLoop = from.includes('summitwebaudit.com') ||
+    from.includes('noreply') || from.includes('no-reply') || from.includes('donotreply') ||
+    from.includes('mailer-daemon') || from.includes('postmaster') ||
+    subject.startsWith('automatic reply') || subject.startsWith('auto-reply') ||
+    subject.startsWith('out of office') || subject.includes('auto-notification') ||
+    subject.match(/^re:\s*re:/i) ||  // Double Re: = auto-reply chain
+    (subject.match(/^re:/i) && from.includes('app@')) ||  // App auto-responders
+    subject.includes('undeliverable') || subject.includes('delivery status') ||
+    subject.includes('your mail to');  // Generic auto-reply pattern
+  if (isLoop) {
+    console.log(`Skipping auto-reply (loop prevention): from=${from} subject=${subject}`);
     return res.json({ received: true, skipped: true });
   }
 
