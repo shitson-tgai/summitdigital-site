@@ -164,8 +164,10 @@ app.post('/api/quick-check', express.json(), async (req, res) => {
     }
     
     // Show max 3 free, tease the rest
-    const freeIssues = issues.slice(0, 3);
-    const hiddenCount = Math.max(issues.length - 3, 2); // Always imply there's more
+    // Show ALL issues free — builds trust, increases engagement
+    // Email gate is now for PDF report + fix instructions (stronger value exchange)
+    const freeIssues = issues;
+    const hiddenCount = Math.max(issues.length, 3); // Full audit finds even more
     const score = Math.max(15, 100 - (issues.length * 7));
 
     // Log every scan for warm lead tracking
