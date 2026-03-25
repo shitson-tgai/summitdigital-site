@@ -99,13 +99,12 @@ def send_email(to_email, website_url, report_path, audit_data):
     grade = scores.get('grade', '?')
     issue_count = audit_data.get('issue_count', 0)
     
-    # Get category scores for summary
-    categories = audit_data.get('categories', {})
-    seo_score = categories.get('seo', {}).get('score', '?')
-    security_score = categories.get('security', {}).get('score', '?')
-    performance_score = categories.get('performance', {}).get('score', '?')
-    accessibility_score = categories.get('accessibility', {}).get('score', '?')
-    content_score = categories.get('content', {}).get('score', '?')
+    # Get category scores for summary — scores are stored flat in scores{}, not nested in categories{}
+    seo_score = scores.get('seo', '?')
+    security_score = scores.get('security', '?')
+    performance_score = scores.get('performance', '?')
+    accessibility_score = scores.get('accessibility', '?')
+    content_score = scores.get('content', '?')
     
     # Get top 3 critical issues for summary
     issues = audit_data.get('issues', [])
