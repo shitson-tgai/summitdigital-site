@@ -19,11 +19,21 @@ const SCANS_FILE = path.join(DATA_DIR, 'scans.csv');
 const SHARES_DIR = path.join(DATA_DIR, 'shares');
 if (!fs.existsSync(SHARES_DIR)) fs.mkdirSync(SHARES_DIR, { recursive: true });
 console.log(`Data directory: ${DATA_DIR} (persistent: ${fs.existsSync('/data')})`);
+// Known page routes (only log these)
+const KNOWN_PAGES = ['/', '/check', '/blog', '/content', '/thank-you', '/order'];
+const BOT_PATTERNS = /bot|crawler|spider|scan|curl|python|go-http|wget|headless|phantom|selenium|scrapy|slurp|yahoo|bing|yandex|baidu|semrush|ahrefs|mj12|dotbot|petalbot|ahc\//i;
+
 app.use((req, res, next) => {
-  // Only log GET requests to pages (not API calls, assets, etc.)
-  if (req.method === 'GET' && !req.path.match(/\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|map)$/)) {
-    const line = `${new Date().toISOString()},${req.path},${req.query.utm_source || ''},${req.headers.referer || ''},${(req.headers['user-agent'] || '').substring(0, 100)}\n`;
-    fs.appendFile(ANALYTICS_FILE, line, () => {});
+  if (req.method === 'GET') {
+    const p = req.path.toLowerCase();
+    const ua = req.headers['user-agent'] || '';
+    // Only log real pages, skip bots
+    const isKnownPage = KNOWN_PAGES.includes(p) || p.startsWith('/blog/');
+    const isBot = BOT_PATTERNS.test(ua) || (!ua && !req.headers.referer);
+    if (isKnownPage && !isBot) {
+      const line = `${new Date().toISOString()},${req.path},${req.query.utm_source || ''},${req.headers.referer || ''},${ua.substring(0, 100)}\n`;
+      fs.appendFile(ANALYTICS_FILE, line, () => {});
+    }
   }
   next();
 });
@@ -492,6 +502,15 @@ app.get('/results/:id', (req, res) => {
 </html>`);
 });
 
+// Engagement tracking endpoint
+const ENGAGE_FILE = path.join(DATA_DIR, 'engagement.csv');
+app.post('/api/engage', express.json(), (req, res) => {
+  const { page, timeOnPage, maxScroll, scanClicked, utm } = req.body || {};
+  const line = `${new Date().toISOString()},${page || ''},${timeOnPage || 0},${maxScroll || 0},${scanClicked || false},${utm || ''}\n`;
+  fs.appendFile(ENGAGE_FILE, line, () => {});
+  res.json({ ok: true });
+});
+
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -546,14 +565,25 @@ app.get('/api/stats', (req, res) => {
   try {
     if (!fs.existsSync(ANALYTICS_FILE)) return res.json({ views: 0, message: 'No data yet' });
     const lines = fs.readFileSync(ANALYTICS_FILE, 'utf8').trim().split('\n').filter(l => l);
-    const today = new Date().toISOString().split('T')[0];
-    const todayLines = lines.filter(l => l.startsWith(today));
+    const dateFilter = req.query.date || new Date().toISOString().split('T')[0];
+    const fromDate = req.query.from;
+    const toDate = req.query.to;
+    let filtered;
+    if (fromDate && toDate) {
+      filtered = lines.filter(l => l.substring(0,10) >= fromDate && l.substring(0,10) <= toDate);
+    } else {
+      filtered = lines.filter(l => l.startsWith(dateFilter));
+    }
     const pages = {};
-    todayLines.forEach(l => {
-      const p = l.split(',')[1] || '/';
+    const sources = {};
+    filtered.forEach(l => {
+      const parts = l.split(',');
+      const p = parts[1] || '/';
+      const src = parts[2] || 'direct';
       pages[p] = (pages[p] || 0) + 1;
+      if (src) sources[src] = (sources[src] || 0) + 1;
     });
-    res.json({ total_views: lines.length, today_views: todayLines.length, today_pages: pages });
+    res.json({ total_views: lines.length, filtered_views: filtered.length, date: fromDate ? `${fromDate} to ${toDate}` : dateFilter, pages, sources });
   } catch (e) {
     res.json({ error: e.message });
   }

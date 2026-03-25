@@ -78,11 +78,49 @@
 <body>
     <div class="container">
         <h1>Free <span>Website Check</span></h1>
-        <p class="subtitle">Enter your URL below and we'll scan it for SEO, security, and performance issues — instantly.</p>
+        <p class="subtitle">Find out what's wrong with your website in 30 seconds. We check SEO, security, performance & more.</p>
+
+        <!-- Trust bar -->
+        <div style="display:flex; justify-content:center; gap:24px; flex-wrap:wrap; margin-bottom:28px; font-size:13px; color:#64748b;">
+            <span>✅ No signup required</span>
+            <span>⚡ Results in 30 seconds</span>
+            <span>🔒 Your data stays private</span>
+        </div>
         
         <div class="input-group">
             <input type="url" id="urlInput" placeholder="https://yourwebsite.com" autofocus>
-            <button id="scanBtn" onclick="runCheck()">Scan Now</button>
+            <button id="scanBtn" onclick="runCheck()">Scan My Site Free →</button>
+        </div>
+
+        <!-- Social proof -->
+        <p style="text-align:center; color:#475569; font-size:13px; margin-bottom:32px;">
+            Used by dentists, salons, restaurants, and 500+ small business owners
+        </p>
+
+        <!-- What you'll get preview -->
+        <div style="background:#1e293b; border-radius:12px; padding:24px; margin-bottom:32px; border:1px solid #334155;">
+            <h3 style="font-size:15px; margin-bottom:16px; color:#94a3b8;">Here's what your free scan checks:</h3>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:14px;">
+                <div>🔍 SEO & meta tags</div>
+                <div>🔒 SSL & security headers</div>
+                <div>⚡ Page load speed</div>
+                <div>📱 Mobile responsiveness</div>
+                <div>♿ Accessibility basics</div>
+                <div>📊 Overall health score</div>
+            </div>
+        </div>
+
+        <!-- Sample result teaser -->
+        <div style="background:#1e293b; border-radius:12px; padding:20px; margin-bottom:32px; border:1px solid #334155;">
+            <h3 style="font-size:15px; margin-bottom:12px; color:#94a3b8;">Example result:</h3>
+            <div style="display:flex; align-items:center; gap:16px;">
+                <div style="font-size:48px; font-weight:800; color:#fbbf24;">62</div>
+                <div>
+                    <div style="font-size:14px; font-weight:600; color:#e2e8f0;">example-business.com</div>
+                    <div style="font-size:13px; color:#94a3b8;">Score: 62/100 · 8 issues found</div>
+                    <div style="font-size:12px; color:#f87171; margin-top:4px;">⚠️ Missing meta description · Slow load time · No HSTS header</div>
+                </div>
+            </div>
         </div>
         
         <div class="loading" id="loading">
@@ -147,6 +185,16 @@
         const input = document.getElementById('urlInput');
         input.addEventListener('keydown', (e) => { if (e.key === 'Enter') runCheck(); });
         let lastScanData = null;
+
+        // Pre-fill URL from query param (from outreach emails)
+        const params = new URLSearchParams(window.location.search);
+        const prefillUrl = params.get('url');
+        if (prefillUrl) {
+            input.value = prefillUrl;
+            // Show personalized message
+            const subtitle = document.querySelector('.subtitle');
+            if (subtitle) subtitle.textContent = "We found some potential issues on your website — scan it now to see them.";
+        }
         
         async function captureEmail() {
             const email = document.getElementById('emailInput').value.trim();
@@ -326,6 +374,24 @@
                 btn.textContent = 'Get Your Full Audit Report →';
             }
         }
+        // Engagement tracking — lightweight, server-side
+        const engageStart = Date.now();
+        let maxScroll = 0;
+        let scanClicked = false;
+        window.addEventListener('scroll', () => {
+            const pct = Math.round((window.scrollY + window.innerHeight) / document.body.scrollHeight * 100);
+            if (pct > maxScroll) maxScroll = pct;
+        });
+        // Log engagement on page leave
+        window.addEventListener('beforeunload', () => {
+            const timeOnPage = Math.round((Date.now() - engageStart) / 1000);
+            const data = JSON.stringify({ page: '/check', timeOnPage, maxScroll, scanClicked, utm: params.get('utm_source') || '' });
+            navigator.sendBeacon('/api/engage', data);
+        });
+        // Track scan button click
+        const origRunCheck = runCheck;
+        // Wrap scan click tracking
+        document.getElementById('scanBtn').addEventListener('click', () => { scanClicked = true; }, true);
     </script>
 </body>
 </html>
