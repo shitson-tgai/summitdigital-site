@@ -172,7 +172,22 @@
                 <li style="margin-bottom:8px;">→ <a href="/check">Run a Free Website Health Check</a></li>
             </ul>
         </div>
-    </article>
+    <!-- Lead Magnet CTA -->
+<div style="background:linear-gradient(135deg,#0f172a,#1a1a2e);border:2px solid #22c55e;border-radius:16px;padding:28px;text-align:center;margin:32px 0;">
+  <h3 style="font-size:1.2rem;margin-bottom:8px;color:#f8fafc;">📥 Free Download: 10-Point Website Audit Checklist</h3>
+  <p style="color:#94a3b8;margin-bottom:16px;">The exact checklist our experts use to find critical website issues. PDF — takes 2 minutes to read.</p>
+  <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+    <input type="email" id="pdfEmail" placeholder="you@business.com" style="padding:12px 18px;font-size:15px;border:2px solid #334155;border-radius:10px;background:#1e293b;color:white;outline:none;width:260px;">
+    <button onclick="getPdf()" id="pdfBtn" style="padding:12px 28px;background:linear-gradient(135deg,#16a34a,#15803d);color:white;font-weight:700;font-size:15px;border:none;border-radius:10px;cursor:pointer;">Send Me the PDF →</button>
+  </div>
+  <p id="pdfSuccess" style="display:none;color:#34d399;margin-top:12px;">✅ Check your inbox! Download link is on its way.</p>
+  <p id="pdfError" style="display:none;color:#f87171;margin-top:12px;"></p>
+</div>
+<script>
+async function getPdf(){var e=document.getElementById("pdfEmail"),b=document.getElementById("pdfBtn"),s=document.getElementById("pdfSuccess"),er=document.getElementById("pdfError");if(!e.value||!e.value.includes("@")){e.focus();return;}b.disabled=true;s.style.display="none";er.style.display="none";try{var r=await fetch("/api/pdf-lead",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:e.value.trim(),source:location.pathname})});var d=await r.json();if(d.ok){s.style.display="block";b.textContent="✅ Sent!";}else throw new Error("fail");}catch(x){er.textContent="Something went wrong — try again.";er.style.display="block";b.disabled=false;}}
+</script>
+
+</article>
 
     <footer>
         <p>© 2026 Summit Web Audit · <a href="mailto:steve@summitwebaudit.com">steve@summitwebaudit.com</a></p>

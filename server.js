@@ -363,6 +363,54 @@ app.get('/api/leads', (req, res) => {
   }
 });
 
+// --- PDF Lead Magnet email gate ---
+app.post('/api/pdf-lead', express.json(), async (req, res) => {
+  const { email, source } = req.body;
+  if (!email || !email.includes('@')) return res.status(400).json({ error: 'Valid email required' });
+  console.log(`PDF LEAD: ${email} | source: ${source || 'unknown'}`);
+
+  // Log lead
+  const leadLine = `${new Date().toISOString()},${email},,pdf_download,${source || 'blog'}\n`;
+  fs.appendFileSync(LEADS_FILE, leadLine);
+
+  // Send email with PDF link + upsell
+  try {
+    const resendKey = process.env.RESEND_API_KEY;
+    if (resendKey) {
+      const fetch = require('node-fetch');
+      await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          from: 'Steve at Summit Web Audit <steve@summitwebaudit.com>',
+          reply_to: 'steve@summitwebaudit.com',
+          to: email,
+          subject: 'Your Free 10-Point Website Audit Checklist',
+          headers: { 'List-Unsubscribe': '<mailto:steve@summitwebaudit.com?subject=unsubscribe>', 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' },
+          text: `Here's your free 10-Point Website Audit Checklist:\n\nhttps://summitwebaudit.com/10-point-website-audit.pdf\n\nThis covers the 10 most critical things every business website needs to get right — from SSL and speed to SEO and mobile.\n\nWant us to run all 50 checks on your site? Get a full audit report for just $9:\nhttps://summitwebaudit.com/check\n\n— Steve\nSummit Web Audit`,
+          html: `<div style="font-family:-apple-system,sans-serif;max-width:600px;margin:0 auto;padding:20px;">
+            <h2 style="color:#1e293b;">Your Free 10-Point Website Audit Checklist</h2>
+            <p>Hey there! Here's your checklist as promised:</p>
+            <div style="text-align:center;margin:24px 0;">
+              <a href="https://summitwebaudit.com/10-point-website-audit.pdf" style="display:inline-block;padding:14px 36px;background:#2563eb;color:white;font-weight:700;border-radius:8px;text-decoration:none;">📥 Download Your PDF</a>
+            </div>
+            <p>This covers the 10 most critical things every business website needs to get right — from SSL and speed to SEO and mobile.</p>
+            <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">
+            <p><strong>Want the full picture?</strong> Our comprehensive 50-point audit covers everything the checklist does and more — with specific fix instructions for your site.</p>
+            <div style="text-align:center;margin:20px 0;">
+              <a href="https://summitwebaudit.com/check" style="display:inline-block;padding:12px 32px;background:#7c3aed;color:white;font-weight:700;border-radius:8px;text-decoration:none;">Get Your Full Audit — $9</a>
+            </div>
+            <p style="color:#64748b;font-size:0.85rem;">Questions? Just reply to this email.</p>
+            <p>— Steve<br>Summit Web Audit</p>
+          </div>`
+        })
+      });
+    }
+  } catch (err) { console.error('PDF lead email error:', err.message); }
+
+  res.json({ ok: true, downloadUrl: '/10-point-website-audit.pdf' });
+});
+
 // --- Share Your Score feature ---
 const crypto = require('crypto');
 
