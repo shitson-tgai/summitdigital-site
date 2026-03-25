@@ -423,6 +423,46 @@ app.post('/api/pdf-lead', express.json(), async (req, res) => {
   res.json({ ok: true, downloadUrl: '/10-point-website-audit.pdf' });
 });
 
+// --- Dynamic OG Score Image ---
+app.get('/og/:id.png', (req, res) => {
+  const filePath = path.join(SHARES_DIR, `${req.params.id}.json`);
+  let data = null;
+  try { data = JSON.parse(fs.readFileSync(filePath, 'utf8')); } catch (e) {}
+  if (!data) return res.status(404).send('Not found');
+
+  const score = data.score;
+  const color = score >= 70 ? '#34d399' : score >= 40 ? '#fbbf24' : '#f87171';
+  const label = score >= 70 ? 'Good' : score >= 40 ? 'Needs Work' : 'Critical Issues';
+  const domain = data.url.replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+  const issues = data.issuesFound || '?';
+
+  // Generate SVG
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+    <rect width="1200" height="630" fill="#0f172a"/>
+    <circle cx="600" cy="240" r="130" fill="none" stroke="${color}" stroke-width="16"/>
+    <text x="600" y="260" text-anchor="middle" font-family="Arial,sans-serif" font-size="96" font-weight="bold" fill="${color}">${score}</text>
+    <text x="600" y="310" text-anchor="middle" font-family="Arial,sans-serif" font-size="24" fill="#94a3b8">/100</text>
+    <text x="600" y="410" text-anchor="middle" font-family="Arial,sans-serif" font-size="32" font-weight="bold" fill="${color}">${label}</text>
+    <text x="600" y="460" text-anchor="middle" font-family="Arial,sans-serif" font-size="24" fill="#94a3b8">${domain} · ${issues} issues found</text>
+    <text x="600" y="560" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" fill="#60a5fa">summitwebaudit.com/check</text>
+    <text x="600" y="590" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" fill="#475569">Free Website Health Check</text>
+  </svg>`;
+
+  // Convert SVG to PNG using ImageMagick
+  const { execSync } = require('child_process');
+  try {
+    const pngBuffer = execSync('convert svg:- png:-', { input: svg, maxBuffer: 2 * 1024 * 1024 });
+    res.set('Content-Type', 'image/png');
+    res.set('Cache-Control', 'public, max-age=86400');
+    res.send(pngBuffer);
+  } catch (err) {
+    // Fallback: serve SVG directly
+    res.set('Content-Type', 'image/svg+xml');
+    res.set('Cache-Control', 'public, max-age=86400');
+    res.send(svg);
+  }
+});
+
 // --- Share Your Score feature ---
 const crypto = require('crypto');
 
