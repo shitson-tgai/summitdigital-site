@@ -397,6 +397,9 @@ app.get('/blog/5-website-mistakes-costing-customers', (req, res) => {
 app.get('/blog/is-your-medical-website-hipaa-compliant', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'blog', 'is-your-medical-website-hipaa-compliant.html'));
 });
+app.get('/blog/ecommerce-website-security-checklist', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'blog', 'ecommerce-website-security-checklist.html'));
+});
 
 // Block common vulnerability probes
 app.use((req, res, next) => {
