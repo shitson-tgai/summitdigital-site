@@ -501,7 +501,7 @@ app.get('/results/:id', (req, res) => {
   <meta property="og:description" content="${ogDesc}">
   <meta property="og:url" content="https://summitwebaudit.com/results/${data.id}">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="https://summitwebaudit.com/og-score.png">
+  <meta property="og:image" content="https://summitwebaudit.com/og/${data.id}.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${ogTitle}">
   <meta name="twitter:description" content="${ogDesc}">
@@ -551,6 +551,81 @@ app.post('/api/engage', express.json(), (req, res) => {
   const line = `${new Date().toISOString()},${page || ''},${timeOnPage || 0},${maxScroll || 0},${scanClicked || false},${utm || ''}\n`;
   fs.appendFile(ENGAGE_FILE, line, () => {});
   res.json({ ok: true });
+});
+
+// --- Dynamic OG image generator ---
+app.get('/og/:id.png', async (req, res) => {
+  try {
+    const shareFile = path.join(SHARES_DIR, `${req.params.id}.json`);
+    let data;
+    try { data = JSON.parse(fs.readFileSync(shareFile, 'utf8')); } catch(e) { return res.status(404).send('Not found'); }
+    
+    const { createCanvas } = require('canvas');
+    const canvas = createCanvas(1200, 630);
+    const ctx = canvas.getContext('2d');
+    
+    // Background
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(0, 0, 1200, 630);
+    
+    // Score circle
+    const score = data.score || 0;
+    const cx = 600, cy = 240, r = 120;
+    const color = score >= 70 ? '#34d399' : score >= 40 ? '#fbbf24' : '#f87171';
+    
+    // Circle background
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.strokeStyle = '#1e293b';
+    ctx.lineWidth = 16;
+    ctx.stroke();
+    
+    // Score arc
+    const startAngle = -Math.PI / 2;
+    const endAngle = startAngle + (score / 100) * Math.PI * 2;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, startAngle, endAngle);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 16;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+    
+    // Score text
+    ctx.fillStyle = color;
+    ctx.font = 'bold 72px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(`${score}`, cx, cy - 5);
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '24px sans-serif';
+    ctx.fillText('/100', cx, cy + 40);
+    
+    // Domain
+    const domain = (data.url || '').replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+    ctx.fillStyle = '#e2e8f0';
+    ctx.font = 'bold 36px sans-serif';
+    ctx.fillText(domain, cx, 410);
+    
+    // Issues
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '24px sans-serif';
+    ctx.fillText(`${data.issuesFound || 'Multiple'} issues found`, cx, 455);
+    
+    // Branding
+    ctx.fillStyle = '#60a5fa';
+    ctx.font = 'bold 28px sans-serif';
+    ctx.fillText('⚡ Summit Web Audit', cx, 560);
+    ctx.fillStyle = '#64748b';
+    ctx.font = '20px sans-serif';
+    ctx.fillText('summitwebaudit.com/check', cx, 595);
+    
+    res.setHeader('Content-Type', 'image/png');
+    res.setHeader('Cache-Control', 'public, max-age=86400');
+    canvas.createPNGStream().pipe(res);
+  } catch(err) {
+    console.error('OG image error:', err);
+    res.status(500).send('Error generating image');
+  }
 });
 
 // Serve static files

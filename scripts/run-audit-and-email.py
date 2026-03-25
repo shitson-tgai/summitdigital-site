@@ -79,44 +79,99 @@ def generate_report(audit_data, output_path):
         os.unlink(json_path)
 
 
+def html_to_pdf(html_path, pdf_path):
+    """Convert HTML report to PDF using Chromium."""
+    result = subprocess.run([
+        'chromium', '--headless', '--disable-gpu', '--no-sandbox',
+        '--print-to-pdf=' + pdf_path,
+        '--no-pdf-header-footer',
+        html_path
+    ], capture_output=True, text=True, timeout=60)
+    if result.returncode != 0:
+        print(f"PDF conversion warning: {result.stderr[:200]}")
+    return os.path.exists(pdf_path) and os.path.getsize(pdf_path) > 0
+
+
 def send_email(to_email, website_url, report_path, audit_data):
-    """Send the audit report via Resend."""
+    """Send summary email with PDF report attached."""
     scores = audit_data.get('scores', {})
     overall = scores.get('overall', '?')
     grade = scores.get('grade', '?')
     issue_count = audit_data.get('issue_count', 0)
     
-    # Read report HTML and base64 encode for attachment
-    with open(report_path, 'rb') as f:
-        report_content = f.read()
-    report_b64 = base64.b64encode(report_content).decode()
+    # Get category scores for summary
+    categories = audit_data.get('categories', {})
+    seo_score = categories.get('seo', {}).get('score', '?')
+    security_score = categories.get('security', {}).get('score', '?')
+    performance_score = categories.get('performance', {}).get('score', '?')
+    accessibility_score = categories.get('accessibility', {}).get('score', '?')
+    content_score = categories.get('content', {}).get('score', '?')
+    
+    # Get top 3 critical issues for summary
+    issues = audit_data.get('issues', [])
+    critical_issues = [i for i in issues if i.get('severity') in ('critical', 'high')][:3]
+    if not critical_issues:
+        critical_issues = issues[:3]
     
     safe_name = website_url.replace('https://', '').replace('http://', '').replace('/', '_').replace(':', '')
     
+    # Convert HTML to PDF
+    pdf_path = report_path.replace('.html', '.pdf')
+    pdf_success = html_to_pdf(report_path, pdf_path)
+    
+    if pdf_success:
+        with open(pdf_path, 'rb') as f:
+            attachment_content = base64.b64encode(f.read()).decode()
+        attachment_filename = f"audit-report-{safe_name}.pdf"
+        attachment_type = "application/pdf"
+        attachment_note = "Your full report is attached as a PDF."
+    else:
+        # Fallback to HTML if PDF conversion fails
+        print("PDF conversion failed, falling back to HTML attachment")
+        with open(report_path, 'rb') as f:
+            attachment_content = base64.b64encode(f.read()).decode()
+        attachment_filename = f"audit-report-{safe_name}.html"
+        attachment_type = "text/html"
+        attachment_note = "Your full report is attached as an HTML file — open it in any browser."
+    
+    # Build critical issues HTML
+    issues_html = ""
+    for issue in critical_issues:
+        severity = issue.get('severity', 'medium')
+        color = '#dc2626' if severity == 'critical' else '#ea580c' if severity == 'high' else '#ca8a04'
+        issues_html += f'<li style="margin-bottom:8px;"><span style="color:{color};font-weight:700;">[{severity.upper()}]</span> {issue.get("title", issue.get("issue", "Issue found"))}</li>'
+    
+    def score_color(s):
+        if isinstance(s, (int, float)):
+            return '#22c55e' if s >= 70 else '#eab308' if s >= 50 else '#ef4444'
+        return '#64748b'
+    
     body_html = f"""
     <div style="font-family:-apple-system,sans-serif;max-width:600px;margin:0 auto;padding:20px;">
-        <h2 style="color:#1e293b;">Your Website Audit Report is Ready! 📊</h2>
+        <h2 style="color:#1e293b;">Your Website Audit Report 📊</h2>
         <p>Hey there,</p>
-        <p>Your comprehensive audit report for <strong>{website_url}</strong> is attached to this email.</p>
+        <p>Your comprehensive audit for <strong>{website_url}</strong> is complete. Here's the summary — full report is attached.</p>
         
         <div style="background:#f1f5f9;border-radius:12px;padding:24px;text-align:center;margin:24px 0;">
-            <div style="font-size:48px;font-weight:800;color:{'#22c55e' if overall >= 70 else '#eab308' if overall >= 50 else '#ef4444'};">{overall}/100</div>
+            <div style="font-size:48px;font-weight:800;color:{score_color(overall)};">{overall}/100</div>
             <div style="color:#64748b;">Overall Score — Grade: <strong>{grade}</strong></div>
             <div style="color:#64748b;margin-top:4px;">{issue_count} issues found</div>
         </div>
         
-        <p>Your report includes:</p>
-        <ul>
-            <li>📊 Detailed score breakdown (SEO, Security, Performance, Accessibility, Content)</li>
-            <li>🚨 Every issue found with severity ratings</li>
-            <li>🔒 Full security headers analysis</li>
-            <li>🔍 Complete SEO analysis (meta tags, headings, structured data)</li>
-            <li>⚡ Performance metrics (response time, HTTPS, redirects)</li>
-        </ul>
+        <h3 style="color:#1e293b;margin-bottom:12px;">Score Breakdown</h3>
+        <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
+            <tr><td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;">🔍 SEO</td><td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;text-align:right;font-weight:700;color:{score_color(seo_score)};">{seo_score}/100</td></tr>
+            <tr><td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;">🔒 Security</td><td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;text-align:right;font-weight:700;color:{score_color(security_score)};">{security_score}/100</td></tr>
+            <tr><td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;">⚡ Performance</td><td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;text-align:right;font-weight:700;color:{score_color(performance_score)};">{performance_score}/100</td></tr>
+            <tr><td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;">♿ Accessibility</td><td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;text-align:right;font-weight:700;color:{score_color(accessibility_score)};">{accessibility_score}/100</td></tr>
+            <tr><td style="padding:8px 12px;">📝 Content</td><td style="padding:8px 12px;text-align:right;font-weight:700;color:{score_color(content_score)};">{content_score}/100</td></tr>
+        </table>
         
-        <p><strong>Open the attached HTML file in any browser to view your interactive report.</strong></p>
+        {'<h3 style="color:#1e293b;margin-bottom:12px;">Top Issues to Fix</h3><ul style="padding-left:20px;">' + issues_html + '</ul>' if issues_html else ''}
         
-        <p>Need help fixing these issues? Just reply to this email — we're happy to point you in the right direction.</p>
+        <p style="margin-top:24px;">{attachment_note} It includes detailed findings, fix instructions, and a prioritized action plan.</p>
+        
+        <p>Need help implementing the fixes? Just reply to this email — happy to point you in the right direction.</p>
         
         <p>Best,<br>Steve<br>Summit Web Audit<br><a href="https://summitwebaudit.com">summitwebaudit.com</a></p>
     </div>
@@ -127,14 +182,14 @@ def send_email(to_email, website_url, report_path, audit_data):
 Overall Score: {overall}/100 (Grade: {grade})
 Issues Found: {issue_count}
 
-Your detailed report is attached as an HTML file. Open it in any browser to view the full interactive report.
+Score Breakdown:
+- SEO: {seo_score}/100
+- Security: {security_score}/100
+- Performance: {performance_score}/100
+- Accessibility: {accessibility_score}/100
+- Content: {content_score}/100
 
-The report covers:
-- SEO Analysis (meta tags, headings, structure)
-- Security Headers (HSTS, CSP, X-Frame-Options)  
-- Performance (response time, HTTPS)
-- Accessibility (alt tags, viewport, language)
-- Content Quality (word count, links)
+{attachment_note} It includes detailed findings, fix instructions, and a prioritized action plan.
 
 Need help fixing these issues? Just reply to this email.
 
@@ -155,13 +210,17 @@ summitwebaudit.com
             "List-Unsubscribe-Post": "List-Unsubscribe=One-Click"
         },
         "attachments": [{
-            "filename": f"audit-report-{safe_name}.html",
-            "content": report_b64,
-            "content_type": "text/html"
+            "filename": attachment_filename,
+            "content": attachment_content,
+            "content_type": attachment_type
         }]
     })
     
     print(f"Report email sent to {to_email} via Resend: {r}")
+    
+    # Clean up PDF
+    if pdf_success and os.path.exists(pdf_path):
+        os.unlink(pdf_path)
 
 
 def main():
