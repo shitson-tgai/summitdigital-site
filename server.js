@@ -16,6 +16,8 @@ const DATA_DIR = fs.existsSync('/data') ? '/data' : __dirname;
 const ANALYTICS_FILE = path.join(DATA_DIR, 'analytics.csv');
 const LEADS_FILE = path.join(DATA_DIR, 'leads.csv');
 const SCANS_FILE = path.join(DATA_DIR, 'scans.csv');
+const SHARES_DIR = path.join(DATA_DIR, 'shares');
+if (!fs.existsSync(SHARES_DIR)) fs.mkdirSync(SHARES_DIR, { recursive: true });
 console.log(`Data directory: ${DATA_DIR} (persistent: ${fs.existsSync('/data')})`);
 app.use((req, res, next) => {
   // Only log GET requests to pages (not API calls, assets, etc.)
@@ -359,6 +361,87 @@ app.get('/api/leads', (req, res) => {
   } catch (e) {
     res.json({ count: 0, leads: [] });
   }
+});
+
+// --- Share Your Score feature ---
+const crypto = require('crypto');
+
+// Create a shareable result
+app.post('/api/share-result', express.json(), (req, res) => {
+  const { url, score, issuesFound } = req.body;
+  if (!url || score === undefined) return res.status(400).json({ error: 'url and score required' });
+  const id = crypto.randomBytes(6).toString('hex'); // 12-char unique id
+  const shareData = { id, url, score, issuesFound, created: new Date().toISOString() };
+  fs.writeFileSync(path.join(SHARES_DIR, `${id}.json`), JSON.stringify(shareData));
+  console.log(`SHARE CREATED: ${id} | ${url} | score ${score}`);
+  res.json({ shareUrl: `https://summitwebaudit.com/results/${id}` });
+});
+
+// Serve shareable results page with dynamic OG tags
+app.get('/results/:id', (req, res) => {
+  const filePath = path.join(SHARES_DIR, `${req.params.id}.json`);
+  let data = null;
+  try { data = JSON.parse(fs.readFileSync(filePath, 'utf8')); } catch (e) {}
+  if (!data) return res.status(404).send('Result not found');
+
+  const scoreColor = data.score >= 70 ? '#34d399' : data.score >= 40 ? '#fbbf24' : '#f87171';
+  const scoreLabel = data.score >= 70 ? 'Good' : data.score >= 40 ? 'Needs Work' : 'Critical Issues';
+  const domain = data.url.replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+  const ogTitle = `${domain} scored ${data.score}/100 — Website Health Check`;
+  const ogDesc = `${data.issuesFound || 'Multiple'} issues found. Check your own site free at Summit Web Audit.`;
+
+  res.send(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${ogTitle}</title>
+  <meta name="description" content="${ogDesc}">
+  <meta property="og:title" content="${ogTitle}">
+  <meta property="og:description" content="${ogDesc}">
+  <meta property="og:url" content="https://summitwebaudit.com/results/${data.id}">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://summitwebaudit.com/og-score.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="${ogTitle}">
+  <meta name="twitter:description" content="${ogDesc}">
+  <meta name="twitter:site" content="@SummitWebAudit">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .card { max-width: 520px; width: 100%; margin: 40px 24px; text-align: center; }
+    .score-ring { width: 180px; height: 180px; border-radius: 50%; border: 8px solid ${scoreColor}; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+    .score-num { font-size: 3.5rem; font-weight: 800; color: ${scoreColor}; }
+    .score-label { font-size: 1.1rem; color: ${scoreColor}; font-weight: 600; margin-bottom: 8px; }
+    .domain { font-size: 1.4rem; color: #94a3b8; margin-bottom: 4px; word-break: break-all; }
+    .issues { color: #94a3b8; margin-bottom: 32px; }
+    .cta { display: inline-block; padding: 16px 48px; background: linear-gradient(135deg, #2563eb, #7c3aed); color: white; font-weight: 700; font-size: 1.1rem; border-radius: 12px; text-decoration: none; margin-bottom: 16px; }
+    .cta:hover { transform: translateY(-1px); }
+    .powered { color: #475569; font-size: 0.85rem; margin-top: 24px; }
+    .powered a { color: #60a5fa; text-decoration: none; }
+    .share-row { display: flex; gap: 12px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
+    .share-btn { padding: 10px 20px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; text-decoration: none; color: white; }
+    .share-tw { background: #1da1f2; }
+    .share-li { background: #0077b5; }
+    .share-fb { background: #1877f2; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="score-ring"><span class="score-num">${data.score}</span></div>
+    <div class="score-label">${scoreLabel}</div>
+    <div class="domain">${domain}</div>
+    <div class="issues">${data.issuesFound || 'Multiple'} issues found</div>
+    <a class="cta" href="/check">Check Your Website Free →</a>
+    <div class="share-row">
+      <a class="share-btn share-tw" href="https://twitter.com/intent/tweet?text=${encodeURIComponent(`My website scored ${data.score}/100 on a health check 👀 Check yours free:`)}&url=${encodeURIComponent(`https://summitwebaudit.com/results/${data.id}`)}" target="_blank">𝕏 Tweet</a>
+      <a class="share-btn share-li" href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://summitwebaudit.com/results/${data.id}`)}" target="_blank">LinkedIn</a>
+      <a class="share-btn share-fb" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`https://summitwebaudit.com/results/${data.id}`)}" target="_blank">Facebook</a>
+    </div>
+    <div class="powered">Powered by <a href="/">Summit Web Audit</a></div>
+  </div>
+</body>
+</html>`);
 });
 
 // Serve static files

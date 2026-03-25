@@ -100,6 +100,17 @@
             <h2 style="margin-bottom: 16px;">Top Issue Found:</h2>
             <div id="issuesList"></div>
             
+            <!-- Share Your Score -->
+            <div id="shareSection" style="display:none; text-align:center; margin: 20px 0;">
+                <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; align-items:center;">
+                    <span style="color:#94a3b8; font-weight:600;">Share your score:</span>
+                    <a id="shareTw" class="share-btn" href="#" target="_blank" style="padding:8px 18px; border-radius:8px; font-size:0.85rem; font-weight:600; text-decoration:none; color:white; background:#1da1f2;">𝕏 Tweet</a>
+                    <a id="shareLi" class="share-btn" href="#" target="_blank" style="padding:8px 18px; border-radius:8px; font-size:0.85rem; font-weight:600; text-decoration:none; color:white; background:#0077b5;">LinkedIn</a>
+                    <a id="shareFb" class="share-btn" href="#" target="_blank" style="padding:8px 18px; border-radius:8px; font-size:0.85rem; font-weight:600; text-decoration:none; color:white; background:#1877f2;">Facebook</a>
+                    <button id="copyLink" onclick="copyShareLink()" style="padding:8px 18px; border-radius:8px; font-size:0.85rem; font-weight:600; color:white; background:#334155; border:1px solid #475569; cursor:pointer;">📋 Copy Link</button>
+                </div>
+            </div>
+
             <div class="email-capture" id="emailCapture" style="background:#1e293b; border:2px solid #7c3aed; border-radius:16px; padding:28px; text-align:center; margin: 24px 0;">
                 <h3 style="margin-bottom:4px;">🔓 <span id="lockedCount">2 more</span> issues found</h3>
                 <p style="color: #94a3b8; margin-bottom: 16px;">Enter your email to unlock all issues + get 3 bonus tips specific to your site — <strong>free</strong>.</p>
@@ -224,6 +235,25 @@
                 if (capturedEmail) document.getElementById('orderEmail').value = capturedEmail;
                 
                 results.style.display = 'block';
+                
+                // Create shareable link
+                try {
+                    const shareResp = await fetch('/api/share-result', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ url: data.url || url, score: data.score, issuesFound: data.issuesFound })
+                    });
+                    const shareData = await shareResp.json();
+                    if (shareData.shareUrl) {
+                        window._shareUrl = shareData.shareUrl;
+                        const text = encodeURIComponent(`My website scored ${data.score}/100 on a health check 👀 Check yours free:`);
+                        const shareUrl = encodeURIComponent(shareData.shareUrl);
+                        document.getElementById('shareTw').href = `https://twitter.com/intent/tweet?text=${text}&url=${shareUrl}`;
+                        document.getElementById('shareLi').href = `https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`;
+                        document.getElementById('shareFb').href = `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`;
+                        document.getElementById('shareSection').style.display = 'block';
+                    }
+                } catch (e) { console.log('Share link creation failed:', e); }
             } catch (err) {
                 error.textContent = 'Error: ' + err.message;
                 error.style.display = 'block';
@@ -232,6 +262,27 @@
                 loading.style.display = 'none';
             }
         }
+        function copyShareLink() {
+            if (window._shareUrl) {
+                navigator.clipboard.writeText(window._shareUrl).then(() => {
+                    const btn = document.getElementById('copyLink');
+                    btn.textContent = '✅ Copied!';
+                    setTimeout(() => { btn.textContent = '📋 Copy Link'; }, 2000);
+                }).catch(() => {
+                    // Fallback for older browsers
+                    const ta = document.createElement('textarea');
+                    ta.value = window._shareUrl;
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    const btn = document.getElementById('copyLink');
+                    btn.textContent = '✅ Copied!';
+                    setTimeout(() => { btn.textContent = '📋 Copy Link'; }, 2000);
+                });
+            }
+        }
+
         async function startOrder() {
             const email = document.getElementById('orderEmail').value.trim();
             const url = document.getElementById('orderUrl').value.trim();
