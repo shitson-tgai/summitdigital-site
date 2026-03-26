@@ -163,6 +163,48 @@ app.post('/api/quick-check', express.json(), async (req, res) => {
       issues.push({ icon: '🔍', issue: 'No structured data (Schema.org)', detail: 'You\'re missing out on rich snippets in Google search results.' });
     }
     
+    // === ADA / Accessibility Checks ===
+    // Check for lang attribute on html tag
+    const htmlLang = result.body.match(/<html[^>]*\slang=["'][a-z]{2}/i);
+    if (!htmlLang) {
+      issues.push({ icon: '♿', issue: 'Missing language attribute on HTML tag', detail: 'Screen readers don\'t know what language to use. Required for ADA/WCAG compliance. (Add lang="en" to your <html> tag)' });
+    }
+    
+    // Check for skip navigation link
+    const skipNav = result.body.match(/skip[- ]?(to|nav|content|main)/i);
+    if (!skipNav) {
+      issues.push({ icon: '♿', issue: 'No skip navigation link', detail: 'Keyboard users must tab through your entire menu on every page. A "Skip to content" link is a basic accessibility requirement.' });
+    }
+    
+    // Check form inputs for labels
+    const inputMatches = result.body.match(/<input[^>]*type=["'](text|email|tel|password|search|url|number)["'][^>]*>/gi) || [];
+    const labelMatches = result.body.match(/<label[^>]*>/gi) || [];
+    if (inputMatches.length > 0 && labelMatches.length < inputMatches.length) {
+      const missing = inputMatches.length - labelMatches.length;
+      issues.push({ icon: '♿', issue: `${missing} form field${missing > 1 ? 's' : ''} may be missing labels`, detail: 'Screen readers can\'t tell users what to type in unlabeled form fields. This is a common ADA lawsuit trigger.' });
+    }
+    
+    // Check for ARIA landmarks or semantic HTML5 elements
+    const hasMain = result.body.match(/<main[\s>]/i);
+    const hasNav = result.body.match(/<nav[\s>]/i);
+    const hasAriaRole = result.body.match(/role=["'](main|navigation|banner|contentinfo)["']/i);
+    if (!hasMain && !hasAriaRole) {
+      issues.push({ icon: '♿', issue: 'No ARIA landmarks or semantic HTML structure', detail: 'Screen readers use landmarks (<main>, <nav>, role attributes) to help users navigate. Without them, your site is a wall of content.' });
+    }
+    
+    // Check link text quality (look for generic "click here" / "read more" without context)
+    const genericLinks = result.body.match(/<a[^>]*>\s*(click here|read more|learn more|here|more|link)\s*<\/a>/gi) || [];
+    if (genericLinks.length >= 3) {
+      issues.push({ icon: '♿', issue: `${genericLinks.length} links with generic text ("click here", "read more")`, detail: 'Screen readers announce link text out of context. "Click here" means nothing — describe where the link goes.' });
+    }
+    
+    // Check for empty links or buttons
+    const emptyLinks = result.body.match(/<a[^>]*>\s*<\/a>/gi) || [];
+    const emptyButtons = result.body.match(/<button[^>]*>\s*<\/button>/gi) || [];
+    if (emptyLinks.length + emptyButtons.length > 0) {
+      issues.push({ icon: '♿', issue: `${emptyLinks.length + emptyButtons.length} empty link(s) or button(s)`, detail: 'Links and buttons with no text are invisible to screen readers. Add descriptive text or aria-label.' });
+    }
+    
     // Show max 3 free, tease the rest
     // Show ALL issues free — builds trust, increases engagement
     // Email gate is now for PDF report + fix instructions (stronger value exchange)
