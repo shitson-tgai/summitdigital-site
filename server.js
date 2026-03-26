@@ -538,6 +538,11 @@ app.get('/results/:id', (req, res) => {
       <a class="share-btn share-li" href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://summitwebaudit.com/results/${data.id}`)}" target="_blank">LinkedIn</a>
       <a class="share-btn share-fb" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`https://summitwebaudit.com/results/${data.id}`)}" target="_blank">Facebook</a>
     </div>
+    <div style="margin-top:24px;padding:20px;background:#1e293b;border-radius:12px;border:1px solid #334155">
+      <p style="font-size:0.9rem;color:#94a3b8;margin-bottom:12px">📛 Add a health score badge to your website:</p>
+      <img src="/badge/${data.id}.svg" alt="Score badge" style="height:36px;margin-bottom:12px"><br>
+      <a href="/badge/${data.id}" style="color:#60a5fa;font-size:0.85rem;text-decoration:none;font-weight:600">Get embed code →</a>
+    </div>
     <div class="powered">Powered by <a href="/">Summit Web Audit</a></div>
   </div>
 </body>
@@ -684,6 +689,74 @@ app.use((req, res, next) => {
     return res.status(404).send('Not found');
   }
   next();
+});
+
+// Embeddable website score badge — SVG
+app.get('/badge/:id.svg', (req, res) => {
+  const shareFile = path.join(SHARES_DIR, `${req.params.id}.json`);
+  if (!fs.existsSync(shareFile)) return res.status(404).send('Not found');
+  let data;
+  try { data = JSON.parse(fs.readFileSync(shareFile, 'utf8')); } catch(e) { return res.status(404).send('Not found'); }
+  
+  const score = data.score || 0;
+  const domain = (data.url || '').replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+  const color = score >= 70 ? '#34d399' : score >= 40 ? '#fbbf24' : '#f87171';
+  const label = score >= 70 ? 'Healthy' : score >= 40 ? 'Needs Work' : 'Critical';
+  
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="220" height="36" viewBox="0 0 220 36">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+  <rect width="220" height="36" rx="6" fill="url(#bg)"/>
+  <rect x="1" y="1" width="218" height="34" rx="5" fill="none" stroke="#334155" stroke-width="1"/>
+  <text x="10" y="23" font-family="system-ui,sans-serif" font-size="12" fill="#94a3b8">⚡ Summit Score</text>
+  <rect x="120" y="4" width="92" height="28" rx="4" fill="${color}20"/>
+  <circle cx="138" cy="18" r="10" fill="none" stroke="${color}" stroke-width="2.5"/>
+  <text x="138" y="22" font-family="system-ui,sans-serif" font-size="10" font-weight="bold" fill="${color}" text-anchor="middle">${score}</text>
+  <text x="156" y="22" font-family="system-ui,sans-serif" font-size="11" font-weight="600" fill="${color}">${label}</text>
+</svg>`;
+  
+  res.setHeader('Content-Type', 'image/svg+xml');
+  res.setHeader('Cache-Control', 'public, max-age=86400');
+  res.send(svg);
+});
+
+// Badge embed page — shows badge + copy-paste code
+app.get('/badge/:id', (req, res) => {
+  const shareFile = path.join(SHARES_DIR, `${req.params.id}.json`);
+  if (!fs.existsSync(shareFile)) return res.status(404).send('Not found');
+  let data;
+  try { data = JSON.parse(fs.readFileSync(shareFile, 'utf8')); } catch(e) { return res.status(404).send('Not found'); }
+  
+  const domain = (data.url || '').replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+  const badgeUrl = `https://summitwebaudit.com/badge/${req.params.id}.svg`;
+  const linkUrl = `https://summitwebaudit.com/check?ref=badge`;
+  const embedCode = `<a href="${linkUrl}" target="_blank" rel="noopener"><img src="${badgeUrl}" alt="Website Health Score - Summit Web Audit" style="height:36px"></a>`;
+  
+  res.send(`<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Your Website Score Badge — Summit Web Audit</title>
+<style>body{font-family:system-ui,sans-serif;background:#0f172a;color:#e2e8f0;max-width:640px;margin:40px auto;padding:20px}
+.badge-preview{background:#1e293b;border-radius:12px;padding:32px;text-align:center;margin:24px 0}
+.code-box{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:16px;font-family:monospace;font-size:13px;color:#94a3b8;word-break:break-all;margin:16px 0}
+.copy-btn{background:#7c3aed;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600}
+.copy-btn:hover{background:#6d28d9}
+h1{color:#60a5fa;font-size:24px}h2{color:#94a3b8;font-size:16px;font-weight:normal}</style></head>
+<body>
+<h1>⚡ Your Website Score Badge</h1>
+<h2>Add this badge to ${domain} to show visitors your site is monitored</h2>
+<div class="badge-preview">
+<img src="${badgeUrl}" alt="Score badge" style="height:36px"><br>
+<p style="color:#64748b;font-size:13px;margin-top:12px">Preview — this is how it looks on your site</p></div>
+<h3 style="color:#e2e8f0">Copy this code into your website's HTML:</h3>
+<div class="code-box" id="embedCode">${embedCode.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+<button class="copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('rawCode').textContent);this.textContent='Copied!'">Copy Embed Code</button>
+<pre id="rawCode" style="display:none">${embedCode}</pre>
+<p style="color:#64748b;font-size:13px;margin-top:24px">Badge updates automatically when you re-scan. <a href="/check" style="color:#60a5fa">Re-scan your site →</a></p>
+</body></html>`);
 });
 
 // Quick analytics stats endpoint (internal use)
