@@ -723,6 +723,9 @@ app.get('/blog/website-security-checklist-small-business', (req, res) => {
 app.get('/blog/is-your-website-ada-compliant', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/blog/is-your-website-ada-compliant.html'));
 });
+app.get('/blog/how-much-does-website-audit-cost', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/blog/how-much-does-website-audit-cost.html'));
+});
 app.get('/blog/free-website-audit-tool-small-business', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'blog', 'free-website-audit-tool-small-business.html'));
 });
