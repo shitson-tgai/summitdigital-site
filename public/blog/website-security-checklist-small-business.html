@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Security Checklist for Small Business Owners (2026) — Summit Web Audit</title>
+    <meta name="description" content="43% of cyberattacks target small businesses. Use this 12-point security checklist to protect your website, your customers, and your reputation.">
+    <meta property="og:title" content="Website Security Checklist for Small Business Owners (2026)">
+    <meta property="og:description" content="43% of cyberattacks target small businesses. Here's a 12-point checklist to lock down your site.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://summitwebaudit.com/blog/website-security-checklist-small-business">
+    <link rel="canonical" href="https://summitwebaudit.com/blog/website-security-checklist-small-business">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f172a; color: #e2e8f0; line-height: 1.8; }
+        .article { max-width: 720px; margin: 0 auto; padding: 60px 24px; }
+        h1 { font-size: 2.2rem; margin-bottom: 16px; line-height: 1.3; }
+        h1 span { background: linear-gradient(135deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .meta { color: #64748b; margin-bottom: 40px; font-size: 0.9rem; }
+        h2 { font-size: 1.5rem; margin: 40px 0 16px; color: #f8fafc; }
+        h3 { font-size: 1.2rem; margin: 28px 0 12px; color: #f8fafc; }
+        p { margin-bottom: 20px; color: #cbd5e1; }
+        ul, ol { margin: 16px 0 24px 24px; color: #cbd5e1; }
+        ul li, ol li { margin-bottom: 8px; }
+        .warning-box { padding: 24px; background: #1e293b; border-radius: 12px; margin-bottom: 24px; border-left: 4px solid #f59e0b; }
+        .warning-box h3 { margin-top: 0; color: #fbbf24; }
+        .check-item { padding: 20px; background: #1e293b; border-radius: 12px; margin-bottom: 12px; border-left: 4px solid #22c55e; }
+        .check-item h3 { margin-top: 0; color: #34d399; }
+        .check-item.critical { border-left-color: #ef4444; }
+        .check-item.critical h3 { color: #f87171; }
+        .stat { font-size: 1.6rem; font-weight: 800; background: linear-gradient(135deg, #f59e0b, #ef4444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: block; margin-bottom: 8px; }
+        .cta-box { background: linear-gradient(135deg, #1e293b, #1a1a2e); border: 2px solid #7c3aed; border-radius: 16px; padding: 32px; text-align: center; margin: 40px 0; }
+        .cta-box h3 { font-size: 1.3rem; margin-bottom: 12px; margin-top: 0; }
+        .cta-box p { color: #94a3b8; }
+        .cta-box a { display: inline-block; padding: 14px 36px; margin-top: 16px; background: linear-gradient(135deg, #2563eb, #7c3aed); color: white; font-weight: 700; font-size: 1rem; border-radius: 12px; text-decoration: none; }
+        a { color: #60a5fa; }
+        @media (max-width: 600px) { h1 { font-size: 1.6rem; } }
+    </style>
+</head>
+<body>
+    <article class="article">
+        <h1>Website Security Checklist for <span>Small Business Owners</span> (2026)</h1>
+        <p class="meta">Published March 26, 2026 · 8 min read · By Summit Web Audit</p>
+
+        <p>You lock your office door at night. You have insurance. You probably have a security camera. But what about your website?</p>
+
+        <div class="warning-box">
+            <span class="stat">43%</span>
+            <p>of all cyberattacks target small businesses. And 60% of small businesses that suffer a cyberattack go out of business within 6 months. Your website is the most exposed part of your business — and most small business owners have no idea how vulnerable it is.</p>
+        </div>
+
+        <p>This checklist covers the 12 most important security measures for any small business website. You don't need to be technical to understand them, and most can be fixed in an afternoon.</p>
+
+        <h2>The 12-Point Security Checklist</h2>
+
+        <div class="check-item critical">
+            <h3>1. ✅ SSL Certificate (HTTPS)</h3>
+            <p><strong>What it is:</strong> SSL encrypts data between your website and your visitors. When it's active, your site shows a padlock icon and uses "https://" instead of "http://".</p>
+            <p><strong>Why it matters:</strong> Without SSL, anyone on the same network (coffee shop WiFi, for example) can intercept data your customers submit — including contact forms, login credentials, and payment info. Google Chrome also labels non-HTTPS sites as "Not Secure."</p>
+            <p><strong>How to check:</strong> Visit your website. Look for the padlock in the address bar. Click it — does it say "Connection is secure"? If not, contact your hosting provider. Most offer free SSL through Let's Encrypt.</p>
+        </div>
+
+        <div class="check-item critical">
+            <h3>2. ✅ HSTS Header (Strict-Transport-Security)</h3>
+            <p><strong>What it is:</strong> HSTS tells browsers to ALWAYS use HTTPS, even if someone types "http://" or clicks an old link.</p>
+            <p><strong>Why it matters:</strong> Without HSTS, there's a brief moment when your site loads over HTTP before redirecting to HTTPS. Attackers can exploit this window (called an SSL stripping attack).</p>
+            <p><strong>How to check:</strong> Use our <a href="/check?utm_source=blog&utm_medium=security_checklist">free website checker</a> — it tests for HSTS automatically.</p>
+        </div>
+
+        <div class="check-item critical">
+            <h3>3. ✅ Content Security Policy (CSP)</h3>
+            <p><strong>What it is:</strong> CSP is a security header that tells browsers which sources of content (scripts, images, styles) are allowed to load on your page.</p>
+            <p><strong>Why it matters:</strong> Without CSP, attackers can inject malicious scripts into your site (Cross-Site Scripting / XSS). These scripts can steal customer data, redirect visitors, or install malware.</p>
+            <p><strong>How to fix:</strong> This typically requires a developer. A basic CSP can be added as an HTTP header or meta tag. Start with <code>default-src 'self'</code> and expand from there.</p>
+        </div>
+
+        <div class="check-item">
+            <h3>4. ✅ X-Frame-Options</h3>
+            <p><strong>What it is:</strong> This header prevents your site from being embedded inside another website using iframes.</p>
+            <p><strong>Why it matters:</strong> Without it, attackers can overlay your site with invisible elements (clickjacking). A customer thinks they're clicking a button on your site, but they're actually clicking something else entirely.</p>
+            <p><strong>How to fix:</strong> Add the header <code>X-Frame-Options: DENY</code> or <code>SAMEORIGIN</code> to your server configuration.</p>
+        </div>
+
+        <div class="check-item">
+            <h3>5. ✅ X-Content-Type-Options</h3>
+            <p><strong>What it is:</strong> This header prevents browsers from trying to "guess" the type of a file (MIME type sniffing).</p>
+            <p><strong>Why it matters:</strong> Without it, a browser might execute a file that looks like an image but is actually a script. Set to <code>nosniff</code>.</p>
+        </div>
+
+        <div class="check-item">
+            <h3>6. ✅ Referrer-Policy</h3>
+            <p><strong>What it is:</strong> Controls how much URL information is shared when visitors click links on your site to other websites.</p>
+            <p><strong>Why it matters:</strong> Without it, the full URL of the page your visitor was on gets sent to third-party sites. If your URLs contain sensitive information (customer IDs, search queries), that's a privacy leak.</p>
+        </div>
+
+        <div class="check-item critical">
+            <h3>7. ✅ Software Updates</h3>
+            <p><strong>What it is:</strong> Keeping your CMS (WordPress, Shopify, Wix), plugins, themes, and server software up to date.</p>
+            <p><strong>Why it matters:</strong> Outdated software has known vulnerabilities that attackers actively scan for. WordPress alone reports thousands of plugin vulnerabilities every year. If you're running a plugin that was last updated in 2023, you're a target.</p>
+            <p><strong>How to check:</strong> Log into your CMS admin panel. Look for update notifications. Enable auto-updates if available.</p>
+        </div>
+
+        <div class="check-item">
+            <h3>8. ✅ Strong Admin Passwords</h3>
+            <p><strong>What it is:</strong> Using unique, complex passwords for your website admin panel, hosting account, and domain registrar.</p>
+            <p><strong>Why it matters:</strong> "password123" and "admin" are still among the most commonly used passwords. Automated bots try thousands of common passwords against your login page every day.</p>
+            <p><strong>How to fix:</strong> Use a password manager (1Password, Bitwarden). Enable two-factor authentication (2FA) on every admin account.</p>
+        </div>
+
+        <div class="check-item">
+            <h3>9. ✅ Regular Backups</h3>
+            <p><strong>What it is:</strong> Automated, regular copies of your website's files and database stored separately from your hosting.</p>
+            <p><strong>Why it matters:</strong> If your site gets hacked, infected with malware, or your hosting goes down — a backup is the difference between a 1-hour fix and starting over from scratch.</p>
+            <p><strong>How to fix:</strong> Most hosting providers offer daily backups. Verify they're actually running. Consider a third-party backup service as well.</p>
+        </div>
+
+        <div class="check-item">
+            <h3>10. ✅ Contact Form Security</h3>
+            <p><strong>What it is:</strong> Ensuring your contact forms can't be exploited for spam, injection attacks, or data harvesting.</p>
+            <p><strong>Why it matters:</strong> Unprotected forms can be used to send spam through your email server, inject malicious code, or scrape data. Add CAPTCHA or honeypot fields to all forms.</p>
+        </div>
+
+        <div class="check-item">
+            <h3>11. ✅ Privacy Policy</h3>
+            <p><strong>What it is:</strong> A page explaining what data you collect, how you use it, and how visitors can opt out.</p>
+            <p><strong>Why it matters:</strong> It's legally required in most jurisdictions if you collect any data (even just a contact form or analytics). GDPR, CCPA, and other regulations can result in significant fines for non-compliance.</p>
+        </div>
+
+        <div class="check-item">
+            <h3>12. ✅ Login Page Protection</h3>
+            <p><strong>What it is:</strong> Limiting login attempts, hiding your admin URL, and blocking brute-force attacks.</p>
+            <p><strong>Why it matters:</strong> The default WordPress login page (/wp-admin) gets hit by bots constantly. Without rate limiting or IP blocking, attackers can try thousands of password combinations per hour.</p>
+            <p><strong>How to fix:</strong> Install a security plugin (Wordfence, Sucuri), change the default admin URL, and limit failed login attempts to 5 before lockout.</p>
+        </div>
+
+        <h2>How Does Your Site Stack Up?</h2>
+
+        <p>Most small business websites fail 6 or more items on this checklist. The average score in our database is 42/100.</p>
+
+        <p>The good news: most of these fixes are straightforward and many are free. The bad news: every day you wait is another day your site is exposed.</p>
+
+        <div class="cta-box">
+            <h3>🔒 Free Security Scan for Your Website</h3>
+            <p>Our scanner checks SSL, security headers, and other technical issues automatically — in 30 seconds. See exactly which items on this checklist your site is missing.</p>
+            <a href="/check?utm_source=blog&utm_medium=security_checklist">Scan Your Website Free →</a>
+            <p style="margin-top: 16px; font-size: 0.85rem; color: #64748b;">No signup required. Results in 30 seconds.</p>
+        </div>
+
+        <h2>Keep Reading</h2>
+        <ul>
+            <li><a href="/blog/ecommerce-website-security-checklist">E-commerce Website Security Checklist for 2026</a></li>
+            <li><a href="/blog/is-your-website-hipaa-compliant">Is Your Website HIPAA Compliant?</a></li>
+            <li><a href="/blog/why-small-business-website-security-matters">Why Small Business Website Security Matters</a></li>
+            <li><a href="/blog/5-website-mistakes-costing-customers">5 Website Mistakes Costing Your Small Business Customers</a></li>
+        </ul>
+
+        <div style="text-align: center; margin-top: 32px;">
+            <a href="/blog">← All Blog Posts</a> · <a href="/">Summit Web Audit Home</a>
+        </div>
+
+<!-- Lead Magnet CTA -->
+<div style="background:linear-gradient(135deg,#0f172a,#1a1a2e);border:2px solid #22c55e;border-radius:16px;padding:28px;text-align:center;margin:32px 0;">
+  <h3 style="font-size:1.2rem;margin-bottom:8px;color:#f8fafc;">📥 Free Download: 10-Point Website Audit Checklist</h3>
+  <p style="color:#94a3b8;margin-bottom:16px;">The exact checklist our experts use to find critical website issues. PDF — takes 2 minutes to read.</p>
+  <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+    <input type="email" id="pdfEmail" placeholder="you@business.com" style="padding:12px 18px;font-size:15px;border:2px solid #334155;border-radius:10px;background:#1e293b;color:white;outline:none;width:260px;">
+    <button onclick="getPdf()" id="pdfBtn" style="padding:12px 28px;background:linear-gradient(135deg,#16a34a,#15803d);color:white;font-weight:700;font-size:15px;border:none;border-radius:10px;cursor:pointer;">Send Me the PDF →</button>
+  </div>
+  <p id="pdfSuccess" style="display:none;color:#34d399;margin-top:12px;">✅ Check your inbox! Download link is on its way.</p>
+  <p id="pdfError" style="display:none;color:#f87171;margin-top:12px;"></p>
+</div>
+<script>
+async function getPdf(){var e=document.getElementById("pdfEmail"),b=document.getElementById("pdfBtn"),s=document.getElementById("pdfSuccess"),er=document.getElementById("pdfError");if(!e.value||!e.value.includes("@")){e.focus();return;}b.disabled=true;s.style.display="none";er.style.display="none";try{var r=await fetch("/api/pdf-lead",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:e.value.trim(),source:location.pathname})});var d=await r.json();if(d.ok){s.style.display="block";b.textContent="✅ Sent!";}else throw new Error("fail");}catch(x){er.textContent="Something went wrong — try again.";er.style.display="block";b.disabled=false;}}
+</script>
+    </article>
+</body>
+</html>

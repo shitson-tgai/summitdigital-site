@@ -670,6 +670,9 @@ app.get('/blog/ecommerce-website-security-checklist', (req, res) => {
 app.get('/blog/why-your-restaurant-needs-a-fast-website', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'blog', 'why-your-restaurant-needs-a-fast-website.html'));
 });
+app.get('/blog/website-security-checklist-small-business', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'blog', 'website-security-checklist-small-business.html'));
+});
 app.get('/blog/free-website-audit-tool-small-business', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'blog', 'free-website-audit-tool-small-business.html'));
 });
