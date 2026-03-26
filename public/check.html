@@ -165,12 +165,14 @@
                 <h3>🔍 Want the full picture?</h3>
                 <p>We found <strong id="hiddenCount">more</strong> additional issues that aren't shown here. Our full 50-point audit covers <strong>SEO, security, performance, accessibility, mobile, and content</strong> — with specific fix instructions for each issue.</p>
                 <div class="price">$9</div>
-                <p style="color:#94a3b8; font-size:0.85rem; margin-bottom: 16px;"><s style="color:#64748b;">$29</s> — Intro price for a limited time</p>
+                <p style="color:#94a3b8; font-size:0.85rem; margin-bottom: 8px;"><s style="color:#64748b;">$29</s> — Intro price for a limited time</p>
+                <p style="color:#fbbf24; font-size:0.8rem; margin-bottom: 16px;">⚡ 700+ sites scanned — most score below 50/100</p>
                 
                 <div id="orderForm">
                     <input type="email" id="orderEmail" placeholder="Your email (for delivery)" style="width:100%; padding:14px 20px; font-size:16px; border:2px solid #334155; border-radius:12px; background:#1e293b; color:white; outline:none; margin-bottom:10px; box-sizing:border-box;">
                     <input type="url" id="orderUrl" placeholder="Website to audit (https://...)" style="width:100%; padding:14px 20px; font-size:16px; border:2px solid #334155; border-radius:12px; background:#1e293b; color:white; outline:none; margin-bottom:16px; box-sizing:border-box;">
-                    <button onclick="startOrder()" id="orderBtn" style="display:inline-block; padding:14px 40px; background:linear-gradient(135deg, #2563eb, #7c3aed); color:white; font-weight:700; font-size:1.1rem; border-radius:12px; border:none; cursor:pointer; width:100%;">Get Your Full Audit Report →</button>
+                    <button onclick="startOrder()" id="orderBtn" style="display:inline-block; padding:16px 40px; background:linear-gradient(135deg, #2563eb, #7c3aed); color:white; font-weight:700; font-size:1.15rem; border-radius:12px; border:none; cursor:pointer; width:100%; letter-spacing:0.3px;">Get Full 50-Point Audit — Just $9 →</button>
+                    <p style="color:#64748b; font-size:0.75rem; text-align:center; margin-top:8px;">PDF report delivered to your inbox in minutes. No subscription.</p>
                     <p id="orderError" style="display:none; color:#f87171; text-align:center; margin-top:8px; font-size:0.9rem;"></p>
                 </div>
             </div>
@@ -367,7 +369,7 @@
                 errEl.textContent = 'Error: ' + e.message + '. Try again.';
                 errEl.style.display = 'block';
                 btn.disabled = false;
-                btn.textContent = 'Get Your Full Audit Report →';
+                btn.textContent = 'Get Full 50-Point Audit — Just $9 →';
             }
         }
         // Engagement tracking — lightweight, server-side
