@@ -678,6 +678,9 @@ app.get('/blog/why-your-restaurant-needs-a-fast-website', (req, res) => {
 app.get('/blog/website-security-checklist-small-business', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'blog', 'website-security-checklist-small-business.html'));
 });
+app.get('/blog/is-your-website-ada-compliant', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/blog/is-your-website-ada-compliant.html'));
+});
 app.get('/blog/free-website-audit-tool-small-business', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'blog', 'free-website-audit-tool-small-business.html'));
 });
