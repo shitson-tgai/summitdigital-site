@@ -390,6 +390,55 @@
         const origRunCheck = runCheck;
         // Wrap scan click tracking
         document.getElementById('scanBtn').addEventListener('click', () => { scanClicked = true; }, true);
+
+        // === EXIT-INTENT POPUP ===
+        let exitShown = false;
+        const exitPopup = document.createElement('div');
+        exitPopup.id = 'exitPopup';
+        exitPopup.innerHTML = `
+            <div style="position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;" onclick="if(event.target===this)document.getElementById('exitPopup').style.display='none'">
+                <div style="background:#0f172a;border:2px solid #7c3aed;border-radius:20px;padding:36px;max-width:440px;width:100%;text-align:center;position:relative;">
+                    <button onclick="document.getElementById('exitPopup').style.display='none'" style="position:absolute;top:12px;right:16px;background:none;border:none;color:#64748b;font-size:24px;cursor:pointer;">&times;</button>
+                    <div style="font-size:48px;margin-bottom:12px;">⚠️</div>
+                    <h2 style="color:#e2e8f0;font-size:22px;margin-bottom:8px;">Wait — your site has issues</h2>
+                    <p style="color:#94a3b8;font-size:15px;margin-bottom:20px;">You just scanned your site and found problems. Don't leave without knowing <strong style="color:#fbbf24">exactly</strong> how to fix them.</p>
+                    <div style="background:#1e293b;border-radius:12px;padding:20px;margin-bottom:20px;">
+                        <p style="color:#e2e8f0;font-size:18px;font-weight:700;margin-bottom:4px;">Full 50-Point Audit — $9</p>
+                        <p style="color:#94a3b8;font-size:13px;margin-bottom:12px;">Prioritized fixes • PDF report • Delivered in minutes</p>
+                        <p style="color:#64748b;font-size:12px;"><s>$29</s> — Launch price. No subscription.</p>
+                    </div>
+                    <a href="#orderForm" onclick="document.getElementById('exitPopup').style.display='none';document.getElementById('orderEmail').focus();" style="display:inline-block;padding:14px 36px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:white;font-weight:700;font-size:16px;border-radius:12px;text-decoration:none;width:100%;box-sizing:border-box;">Get My Audit Report — $9 →</a>
+                    <p style="color:#475569;font-size:12px;margin-top:12px;cursor:pointer;" onclick="document.getElementById('exitPopup').style.display='none'">No thanks, I'll risk it</p>
+                </div>
+            </div>
+        `;
+        exitPopup.style.display = 'none';
+        document.body.appendChild(exitPopup);
+
+        // Trigger on mouse leaving viewport (desktop) — only after scan results shown
+        document.addEventListener('mouseout', (e) => {
+            if (exitShown) return;
+            if (!scanClicked) return; // Only show after they've scanned
+            if (e.clientY <= 0 || e.clientX <= 0 || e.clientX >= window.innerWidth) {
+                exitShown = true;
+                exitPopup.style.display = 'block';
+            }
+        });
+
+        // Also trigger after 45 seconds on page if they scanned but haven't scrolled to order
+        setTimeout(() => {
+            if (exitShown) return;
+            if (!scanClicked) return;
+            const orderSection = document.querySelector('.upsell');
+            if (orderSection) {
+                const rect = orderSection.getBoundingClientRect();
+                // If order section is below viewport, they haven't scrolled to it
+                if (rect.top > window.innerHeight) {
+                    exitShown = true;
+                    exitPopup.style.display = 'block';
+                }
+            }
+        }, 45000);
     </script>
 </body>
 </html>
