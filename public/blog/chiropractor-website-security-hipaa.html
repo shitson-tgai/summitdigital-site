@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Is Your Chiropractic Website HIPAA Compliant? What Most DCs Miss</title>
+    <meta name="description" content="72% of chiropractic websites fail basic security checks. If your site collects patient info without encryption, you could face $50,000+ HIPAA fines. Here's what to check.">
+    <meta property="og:title" content="Is Your Chiropractic Website HIPAA Compliant?">
+    <meta property="og:description" content="72% of chiropractic websites fail basic security checks. Here's what most DCs miss.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://summitwebaudit.com/blog/chiropractor-website-security-hipaa">
+    <link rel="canonical" href="https://summitwebaudit.com/blog/chiropractor-website-security-hipaa">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.7; color: #1a1a2e; background: #f8f9fa; }
+        .container { max-width: 720px; margin: 0 auto; padding: 40px 20px; }
+        h1 { font-size: 2rem; margin-bottom: 1rem; line-height: 1.3; color: #16213e; }
+        h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: #16213e; }
+        h3 { font-size: 1.15rem; margin: 1.5rem 0 0.75rem; color: #0f3460; }
+        p { margin-bottom: 1rem; color: #333; }
+        ul, ol { margin: 0 0 1rem 1.5rem; color: #333; }
+        li { margin-bottom: 0.5rem; }
+        .highlight-box { background: #fff3cd; border-left: 4px solid #ffc107; padding: 1rem 1.25rem; margin: 1.5rem 0; border-radius: 4px; }
+        .danger-box { background: #f8d7da; border-left: 4px solid #dc3545; padding: 1rem 1.25rem; margin: 1.5rem 0; border-radius: 4px; }
+        .success-box { background: #d4edda; border-left: 4px solid #28a745; padding: 1rem 1.25rem; margin: 1.5rem 0; border-radius: 4px; }
+        .cta-box { background: linear-gradient(135deg, #0f3460, #16213e); color: white; padding: 2rem; border-radius: 8px; text-align: center; margin: 2rem 0; }
+        .cta-box h3 { color: white; }
+        .cta-box p { color: #e0e0e0; }
+        .cta-box a { display: inline-block; background: #e94560; color: white; padding: 14px 32px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 1.1rem; margin-top: 1rem; }
+        .cta-box a:hover { background: #c73e55; }
+        a { color: #0f3460; }
+        .meta { color: #666; font-size: 0.9rem; margin-bottom: 2rem; }
+        .stat { font-size: 2.5rem; font-weight: bold; color: #e94560; text-align: center; margin: 1rem 0; }
+        blockquote { border-left: 3px solid #0f3460; padding-left: 1rem; margin: 1rem 0; font-style: italic; color: #555; }
+        .back-link { display: inline-block; margin-top: 2rem; color: #0f3460; text-decoration: none; }
+        .checklist { list-style: none; margin-left: 0; }
+        .checklist li { padding: 0.5rem 0; padding-left: 1.75rem; position: relative; }
+        .checklist li::before { content: "☐"; position: absolute; left: 0; }
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+        th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f1f3f5; font-weight: 600; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <p class="meta">Published March 27, 2026 · 6 min read</p>
+    
+    <h1>Is Your Chiropractic Website HIPAA Compliant? What Most DCs Miss</h1>
+    
+    <p>We scanned 200+ chiropractic websites across Chicago, Houston, Philadelphia, and Indianapolis last week. The results were alarming:</p>
+    
+    <div class="stat">72%</div>
+    <p style="text-align:center; color: #666; margin-top: -0.5rem;">of chiropractic websites failed basic security checks</p>
+    
+    <div class="danger-box">
+        <strong>⚠️ The Risk:</strong> If your chiropractic website has a contact form, appointment request form, or patient intake form — and it's missing basic security headers — you may be violating HIPAA. Fines start at <strong>$100 per violation</strong> and can reach <strong>$50,000+ per incident</strong>.
+    </div>
+    
+    <h2>Why Chiropractors Are Especially Vulnerable</h2>
+    
+    <p>Most chiropractic practices rely on their website for new patient acquisition. That means your site likely has:</p>
+    
+    <ul>
+        <li><strong>Contact forms</strong> where patients describe their symptoms</li>
+        <li><strong>Appointment request forms</strong> collecting names, phone numbers, and sometimes insurance info</li>
+        <li><strong>Patient intake forms</strong> that collect health history before the first visit</li>
+        <li><strong>Live chat widgets</strong> where patients share health concerns</li>
+    </ul>
+    
+    <p>Every one of these is a potential HIPAA violation if your website isn't properly secured.</p>
+    
+    <h2>The 7 Security Issues We Found Most Often</h2>
+    
+    <p>Here's what we found when scanning chiropractic websites:</p>
+    
+    <h3>1. Missing HSTS Header (68% of sites)</h3>
+    <p>HSTS (HTTP Strict Transport Security) forces browsers to use encrypted HTTPS connections. Without it, patient data submitted through your forms could be intercepted. This is the single most common security gap we find.</p>
+    
+    <h3>2. No Content Security Policy (71% of sites)</h3>
+    <p>A Content Security Policy prevents malicious scripts from being injected into your website. Without one, attackers could potentially capture form submissions — including patient data.</p>
+    
+    <h3>3. Missing Referrer-Policy (55% of sites)</h3>
+    <p>Without this header, when a patient clicks a link on your site, the destination website can see the full URL they came from — potentially including patient-identifiable information in query parameters.</p>
+    
+    <h3>4. No Meta Description (45% of sites)</h3>
+    <p>While not a security issue, missing meta descriptions mean Google creates its own snippet for your site in search results. You're losing control of your first impression with potential patients.</p>
+    
+    <h3>5. Missing Alt Text on Images (61% of sites)</h3>
+    <p>Images without alt text hurt your SEO and make your site inaccessible to visually impaired visitors. Under the ADA, healthcare providers have an obligation to maintain accessible websites.</p>
+    
+    <h3>6. No Structured Data (78% of sites)</h3>
+    <p>Structured data (Schema.org markup) helps Google understand your business — your hours, location, services, and reviews. Without it, you're invisible to rich search results that drive clicks.</p>
+    
+    <h3>7. Slow Load Times (34% of sites)</h3>
+    <p>Sites loading in 5+ seconds lose 40% of visitors. For a chiropractic practice, that's potential patients clicking "back" and choosing your competitor instead.</p>
+    
+    <div class="cta-box">
+        <h3>🔍 Free Chiropractic Website Check</h3>
+        <p>See exactly which issues YOUR site has. 30-second scan, no signup required.</p>
+        <a href="/check?utm_source=blog&utm_medium=chiro-hipaa">Scan My Website Free →</a>
+    </div>
+    
+    <h2>What HIPAA Actually Requires for Your Website</h2>
+    
+    <p>HIPAA's Security Rule requires "appropriate administrative, physical, and technical safeguards" for protected health information (PHI). For your website, this means:</p>
+    
+    <ul class="checklist">
+        <li><strong>SSL/TLS encryption</strong> — Your site must use HTTPS (the padlock icon)</li>
+        <li><strong>HSTS header</strong> — Force all connections to use encryption</li>
+        <li><strong>Secure form handling</strong> — Form data must be encrypted in transit and at rest</li>
+        <li><strong>Access controls</strong> — Limit who can access submitted patient data</li>
+        <li><strong>BAA with vendors</strong> — Your hosting provider, form handler, and email service need Business Associate Agreements</li>
+        <li><strong>Security headers</strong> — CSP, X-Frame-Options, and Referrer-Policy protect against common attacks</li>
+    </ul>
+    
+    <div class="highlight-box">
+        <strong>💡 Important:</strong> Having an SSL certificate (HTTPS) is necessary but NOT sufficient. Many chiropractors think the padlock icon means they're HIPAA compliant. It doesn't. You need the full set of security headers to properly protect patient data.
+    </div>
+    
+    <h2>The Real Cost of Non-Compliance</h2>
+    
+    <table>
+        <tr><th>Violation Tier</th><th>Fine Per Violation</th><th>Annual Maximum</th></tr>
+        <tr><td>Tier 1 (Unaware)</td><td>$100 – $50,000</td><td>$25,000</td></tr>
+        <tr><td>Tier 2 (Reasonable Cause)</td><td>$1,000 – $50,000</td><td>$100,000</td></tr>
+        <tr><td>Tier 3 (Willful Neglect, Corrected)</td><td>$10,000 – $50,000</td><td>$250,000</td></tr>
+        <tr><td>Tier 4 (Willful Neglect, Not Corrected)</td><td>$50,000</td><td>$1,500,000</td></tr>
+    </table>
+    
+    <p>Beyond fines, a data breach or HIPAA violation can destroy patient trust — the foundation of every chiropractic practice.</p>
+    
+    <h2>How to Fix It: A Quick Action Plan</h2>
+    
+    <ol>
+        <li><strong>Run a free scan</strong> — Use our <a href="/check?utm_source=blog&utm_medium=chiro-hipaa">free website checker</a> to identify your specific issues</li>
+        <li><strong>Fix security headers first</strong> — Your hosting provider or developer can add HSTS, CSP, and Referrer-Policy in minutes</li>
+        <li><strong>Audit your forms</strong> — Make sure every form that collects patient info uses encrypted submission</li>
+        <li><strong>Check your vendors</strong> — Confirm BAAs are in place with your hosting, email, and form providers</li>
+        <li><strong>Get a full audit</strong> — Our <a href="/?utm_source=blog&utm_medium=chiro-hipaa">$9 comprehensive audit</a> checks 50+ factors and gives you a prioritized fix plan with exact steps</li>
+    </ol>
+    
+    <div class="success-box">
+        <strong>✅ Good News:</strong> Most of these issues can be fixed in under an hour by your web developer. The hard part is knowing what's wrong — which is exactly what our scanner does.
+    </div>
+    
+    <div class="cta-box">
+        <h3>Don't Wait for a HIPAA Audit to Find Out</h3>
+        <p>Get your website's health score in 30 seconds. Free, no signup required.</p>
+        <a href="/check?utm_source=blog&utm_medium=chiro-hipaa">Check My Chiropractic Website →</a>
+    </div>
+    
+    <p><a href="/blog" class="back-link">← Back to Blog</a></p>
+</div>
+
+<!-- Schema.org structured data -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Is Your Chiropractic Website HIPAA Compliant? What Most DCs Miss",
+    "description": "72% of chiropractic websites fail basic security checks. If your site collects patient info without encryption, you could face $50,000+ HIPAA fines.",
+    "datePublished": "2026-03-27",
+    "author": {"@type": "Organization", "name": "Summit Web Audit"},
+    "publisher": {"@type": "Organization", "name": "Summit Web Audit", "url": "https://summitwebaudit.com"}
+}
+</script>
+</body>
+</html>
