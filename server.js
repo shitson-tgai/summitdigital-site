@@ -248,6 +248,7 @@ app.post('/api/create-checkout', express.json(), async (req, res) => {
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       customer_email: email,
+      allow_promotion_codes: true,
       line_items: [{
         price: 'price_1TECTeRz4FTeJoj7NbHBkNty', // $9 intro price
         quantity: 1,
