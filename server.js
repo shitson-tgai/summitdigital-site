@@ -349,7 +349,9 @@ app.post('/inbound', express.json(), async (req, res) => {
     subject.match(/^re:\s*re:/i) ||  // Double Re: = auto-reply chain
     (subject.match(/^re:/i) && from.includes('app@')) ||  // App auto-responders
     subject.includes('undeliverable') || subject.includes('delivery status') ||
-    subject.includes('your mail to');  // Generic auto-reply pattern
+    subject.includes('your mail to') ||  // Generic auto-reply pattern
+    subject.includes('dmarc') || subject.includes('report domain') ||  // DMARC aggregate reports
+    from.includes('dmarc') || from.includes('dmarcreport');
   if (isLoop) {
     console.log(`Skipping auto-reply (loop prevention): from=${from} subject=${subject}`);
     return res.json({ received: true, skipped: true });
