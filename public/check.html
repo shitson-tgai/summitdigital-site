@@ -184,6 +184,18 @@
             </div>
         </div>
         
+        <!-- Monthly Monitoring CTA -->
+        <div id="monitoringCta" style="display:none; background:#0f172a; border:2px solid #22c55e; border-radius:16px; padding:28px; margin-top:24px; text-align:center;">
+            <p style="font-size:0.75rem; color:#22c55e; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">📡 New</p>
+            <h3 style="color:#f8fafc; font-size:1.2rem; margin-bottom:8px;">Never Miss a Website Issue Again</h3>
+            <p style="color:#94a3b8; font-size:0.95rem; margin-bottom:16px;">We'll re-scan your site every month and email you a report: what improved, what got worse, and any new issues. Get alerted before your customers notice.</p>
+            <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+                <a href="https://buy.stripe.com/8x2bJ32T59LP4mN8IRes004" style="display:inline-block; padding:14px 28px; background:linear-gradient(135deg,#22c55e,#16a34a); color:white; font-weight:700; border-radius:10px; text-decoration:none; font-size:0.95rem;">$5/month →</a>
+                <a href="https://buy.stripe.com/9B614pgJVgadg5v7ENes005" style="display:inline-block; padding:14px 28px; background:#1e293b; color:#e2e8f0; font-weight:600; border-radius:10px; text-decoration:none; font-size:0.95rem; border:1px solid #334155;">$49/year (save 18%)</a>
+            </div>
+            <p style="color:#64748b; font-size:0.75rem; margin-top:12px;">Monthly scan + comparison report + alerts. Cancel anytime.</p>
+        </div>
+
         <div class="back-link">
             <a href="/">← Back to Summit Web Audit</a>
         </div>
@@ -287,6 +299,10 @@
                 if (capturedEmail) document.getElementById('orderEmail').value = capturedEmail;
                 
                 results.style.display = 'block';
+                
+                // Show monitoring CTA
+                const monCta = document.getElementById('monitoringCta');
+                if (monCta) monCta.style.display = 'block';
                 
                 // Create shareable link
                 try {
