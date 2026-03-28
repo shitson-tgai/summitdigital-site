@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WordPress Security Checklist for Small Business Owners (2026) — Summit Web Audit</title>
+    <meta name="description" content="43% of all websites run WordPress, making it the #1 target for hackers. Use this 15-point security checklist to protect your small business site.">
+    <meta property="og:title" content="WordPress Security Checklist for Small Business Owners">
+    <meta property="og:description" content="43% of websites run WordPress. Here's how to lock yours down in 30 minutes.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://summitwebaudit.com/blog/wordpress-security-checklist-small-business">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@SummitWebAudit">
+    <link rel="canonical" href="https://summitwebaudit.com/blog/wordpress-security-checklist-small-business">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1f2937; line-height: 1.8; background: #fff; }
+        .container { max-width: 720px; margin: 0 auto; padding: 40px 20px; }
+        h1 { font-size: 32px; font-weight: 800; margin-bottom: 16px; line-height: 1.2; color: #0f172a; }
+        h2 { font-size: 24px; font-weight: 700; margin: 36px 0 16px; color: #0f172a; }
+        h3 { font-size: 20px; font-weight: 600; margin: 28px 0 12px; color: #1e293b; }
+        p { margin-bottom: 16px; }
+        a { color: #2563eb; }
+        ul, ol { margin-bottom: 16px; padding-left: 24px; }
+        li { margin-bottom: 10px; }
+        code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 0.9rem; }
+        .check-item { padding: 16px 20px; background: #f8fafc; border-radius: 10px; margin-bottom: 12px; border-left: 4px solid #22c55e; }
+        .check-item.critical { border-left-color: #ef4444; background: #fef2f2; }
+        .check-item.important { border-left-color: #f59e0b; background: #fffbeb; }
+        .check-item h3 { margin: 0 0 8px; font-size: 1rem; }
+        .check-item p { margin-bottom: 0; font-size: 0.95rem; }
+        .warning-box { padding: 16px 20px; background: #fef2f2; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ef4444; }
+        .cta-box { background: linear-gradient(135deg, #0f172a, #1e293b); border-radius: 16px; padding: 32px; text-align: center; margin: 40px 0; color: white; }
+        .cta-btn { display: inline-block; padding: 16px 40px; background: linear-gradient(135deg, #2563eb, #7c3aed); color: white; font-weight: 700; border-radius: 12px; text-decoration: none; font-size: 1.1rem; }
+        .cta-btn:hover { opacity: 0.9; }
+        .breadcrumb { font-size: 0.85rem; color: #64748b; margin-bottom: 24px; }
+        .nav { padding: 16px 20px; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: space-between; }
+        .nav a { color: #2563eb; text-decoration: none; font-weight: 600; }
+    </style>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "WordPress Security Checklist for Small Business Owners (2026)",
+        "description": "15-point WordPress security checklist to protect your small business website from hackers, malware, and data breaches.",
+        "author": {"@type": "Organization", "name": "Summit Web Audit"},
+        "publisher": {"@type": "Organization", "name": "Summit Web Audit", "url": "https://summitwebaudit.com"},
+        "datePublished": "2026-03-28",
+        "mainEntityOfPage": "https://summitwebaudit.com/blog/wordpress-security-checklist-small-business"
+    }
+    </script>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">Summit Web Audit</a>
+        <div>
+            <a href="/check" style="margin-right: 16px;">Free Check</a>
+            <a href="/blog">Blog</a>
+        </div>
+    </div>
+    <div class="container">
+        <div class="breadcrumb"><a href="/">Home</a> → <a href="/blog">Blog</a> → WordPress Security Checklist</div>
+
+        <h1>WordPress Security Checklist for Small Business Owners (2026)</h1>
+        <p style="color: #64748b; font-size: 0.9rem;">March 28, 2026 · 8 min read</p>
+
+        <p>WordPress powers 43% of all websites on the internet. That makes it the single biggest target for hackers — and small business sites are the easiest prey.</p>
+
+        <p>Why? Because most small business WordPress sites are running outdated plugins, using weak passwords, and have zero security hardening. Attackers know this, and they use automated bots to scan thousands of WordPress sites per hour looking for exactly these vulnerabilities.</p>
+
+        <div class="warning-box">
+            <strong>The numbers:</strong> Over 13,000 WordPress sites are hacked every day (Sucuri). 90% of all hacked CMS sites in 2025 were WordPress. The average cost of a small business data breach: $120,000 (IBM).
+        </div>
+
+        <p>The good news? Most WordPress security issues are preventable with basic hardening. This checklist covers the 15 most important steps, ranked by impact.</p>
+
+        <h2>🔴 Critical — Do These First</h2>
+
+        <div class="check-item critical">
+            <h3>1. ✅ Update WordPress Core, Themes, and Plugins</h3>
+            <p>Outdated software is the #1 attack vector. Go to Dashboard → Updates and install everything. Enable auto-updates for minor releases: add <code>define('WP_AUTO_UPDATE_CORE', 'minor');</code> to wp-config.php.</p>
+        </div>
+
+        <div class="check-item critical">
+            <h3>2. ✅ Use Strong, Unique Passwords</h3>
+            <p>Every admin account needs a password that's 16+ characters with mixed case, numbers, and symbols. Use a password manager (1Password, Bitwarden). Never reuse passwords across sites.</p>
+        </div>
+
+        <div class="check-item critical">
+            <h3>3. ✅ Install an SSL Certificate (HTTPS)</h3>
+            <p>If your site still loads over HTTP, fix this immediately. Most hosts offer free SSL via Let's Encrypt. In WordPress Settings → General, update both URLs to <code>https://</code>. Then check for <a href="/blog/how-to-fix-mixed-content-warnings">mixed content warnings</a>.</p>
+        </div>
+
+        <div class="check-item critical">
+            <h3>4. ✅ Delete Unused Themes and Plugins</h3>
+            <p>Every installed plugin is a potential attack surface — even if it's deactivated. If you're not using it, delete it. Keep your active plugin count as low as possible.</p>
+        </div>
+
+        <div class="check-item critical">
+            <h3>5. ✅ Set Up Automated Backups</h3>
+            <p>If you get hacked, a clean backup is your lifeline. Use UpdraftPlus (free) to schedule daily database backups and weekly full backups to cloud storage (Google Drive, Dropbox). Test your restore process at least once.</p>
+        </div>
+
+        <h2>🟡 Important — Do These Next</h2>
+
+        <div class="check-item important">
+            <h3>6. ✅ Enable Two-Factor Authentication (2FA)</h3>
+            <p>Add 2FA to every admin and editor account. The free WP 2FA plugin works well. This stops 99% of brute-force login attacks dead — even if a password is compromised.</p>
+        </div>
+
+        <div class="check-item important">
+            <h3>7. ✅ Limit Login Attempts</h3>
+            <p>WordPress allows unlimited login attempts by default — an open invitation for brute-force attacks. Install Limit Login Attempts Reloaded (free) to lock out IPs after 3-5 failed attempts.</p>
+        </div>
+
+        <div class="check-item important">
+            <h3>8. ✅ Change the Default Admin Username</h3>
+            <p>If your admin account is still called "admin", create a new administrator account with a unique username, log in with it, and delete the "admin" account. Bots target "admin" by default.</p>
+        </div>
+
+        <div class="check-item important">
+            <h3>9. ✅ Add Security Headers</h3>
+            <p>Most WordPress sites have zero <a href="/blog/website-security-headers-explained">security headers</a>. Install the Headers Security Advanced & HSTS WP plugin to add Strict-Transport-Security, X-Content-Type-Options, X-Frame-Options, and Content-Security-Policy with a few clicks.</p>
+        </div>
+
+        <div class="check-item important">
+            <h3>10. ✅ Disable File Editing in the Dashboard</h3>
+            <p>WordPress lets admins edit plugin and theme files directly from the dashboard. If an attacker gets admin access, this is the first thing they exploit. Disable it by adding to wp-config.php: <code>define('DISALLOW_FILE_EDIT', true);</code></p>
+        </div>
+
+        <h2>🟢 Recommended — Layer On These</h2>
+
+        <div class="check-item">
+            <h3>11. ✅ Hide Your WordPress Version</h3>
+            <p>WordPress broadcasts its version number in the HTML source by default. Attackers use this to target known vulnerabilities for specific versions. Remove it by adding to your theme's functions.php: <code>remove_action('wp_head', 'wp_generator');</code></p>
+        </div>
+
+        <div class="check-item">
+            <h3>12. ✅ Move wp-config.php Up One Directory</h3>
+            <p>WordPress automatically checks one directory above the web root for wp-config.php. Moving it there means it's not accessible via the web, protecting your database credentials.</p>
+        </div>
+
+        <div class="check-item">
+            <h3>13. ✅ Disable XML-RPC</h3>
+            <p>XML-RPC is an old API that most sites don't need. It's a common target for DDoS and brute-force attacks. Disable it by adding to .htaccess: <code>&lt;Files xmlrpc.php&gt; Order Deny,Allow Deny from all &lt;/Files&gt;</code></p>
+        </div>
+
+        <div class="check-item">
+            <h3>14. ✅ Install a Security Plugin</h3>
+            <p>Wordfence (free tier) provides a web application firewall, malware scanning, and login security in one package. It won't catch everything, but it's a solid baseline. Alternative: Sucuri Security.</p>
+        </div>
+
+        <div class="check-item">
+            <h3>15. ✅ Schedule Monthly Security Audits</h3>
+            <p><a href="/check">Run a free scan</a> of your site monthly to catch new issues — expired SSL, missing headers, new mixed content, or SEO problems that creep in with updates. Set a calendar reminder.</p>
+        </div>
+
+        <h2>Bonus: Quick Security Wins</h2>
+
+        <ul>
+            <li><strong>Use a reputable hosting provider.</strong> Shared hosting on a $3/month plan means you're sharing a server with hundreds of other sites — any one of which could be compromised. SiteGround, Cloudways, or WP Engine offer WordPress-specific security.</li>
+            <li><strong>Use Cloudflare (free tier).</strong> Adds a CDN, DDoS protection, and the option to set security headers at the edge — all for free.</li>
+            <li><strong>Monitor your site with Google Search Console.</strong> GSC alerts you if Google detects malware or security issues on your site.</li>
+        </ul>
+
+        <div class="cta-box">
+            <h2 style="color: white; margin-top: 0;">How Secure Is Your WordPress Site?</h2>
+            <p style="color: #94a3b8;">Our free scanner checks HTTPS, security headers, mixed content, and 15 other issues. Results in 30 seconds.</p>
+            <a href="/check" class="cta-btn">Scan Your Site Free →</a>
+            <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 0; margin-top: 16px;">Full report with fix instructions: <a href="/pricing" style="color: #93c5fd;">just $9</a></p>
+        </div>
+
+        <p style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #64748b; font-size: 0.9rem;">
+            <strong>Related:</strong> <a href="/blog/website-security-headers-explained">Website Security Headers Explained</a> · <a href="/blog/how-to-fix-mixed-content-warnings">How to Fix Mixed Content Warnings</a> · <a href="/blog/website-security-checklist-small-business">Website Security Checklist</a> · <a href="/blog/ecommerce-website-security-checklist">E-commerce Security Checklist</a>
+        </p>
+    </div>
+</body>
+</html>
