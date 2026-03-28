@@ -858,6 +858,12 @@ app.get('/api/stats', (req, res) => {
 });
 
 // Thank you page after purchase
+app.get('/pricing', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'pricing.html'));
+});
+app.get('/sample-report', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'sample-report.html'));
+});
 app.get('/thank-you', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'thank-you.html'));
 });
