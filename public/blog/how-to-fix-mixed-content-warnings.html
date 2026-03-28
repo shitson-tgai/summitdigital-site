@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Fix Mixed Content Warnings on Your Website (Step-by-Step) — Summit Web Audit</title>
+    <meta name="description" content="Mixed content warnings mean your HTTPS site loads some resources over HTTP. Here's how to find and fix every mixed content issue in under 30 minutes.">
+    <meta property="og:title" content="How to Fix Mixed Content Warnings on Your Website">
+    <meta property="og:description" content="Your HTTPS site is loading resources over HTTP. Browsers warn visitors and Google penalizes you. Here's the fix.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://summitwebaudit.com/blog/how-to-fix-mixed-content-warnings">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@SummitWebAudit">
+    <link rel="canonical" href="https://summitwebaudit.com/blog/how-to-fix-mixed-content-warnings">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1f2937; line-height: 1.8; background: #fff; }
+        .container { max-width: 720px; margin: 0 auto; padding: 40px 20px; }
+        h1 { font-size: 32px; font-weight: 800; margin-bottom: 16px; line-height: 1.2; color: #0f172a; }
+        h2 { font-size: 24px; font-weight: 700; margin: 36px 0 16px; color: #0f172a; }
+        h3 { font-size: 20px; font-weight: 600; margin: 28px 0 12px; color: #1e293b; }
+        p { margin-bottom: 16px; }
+        a { color: #2563eb; }
+        ul, ol { margin-bottom: 16px; padding-left: 24px; }
+        li { margin-bottom: 8px; }
+        code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 0.9rem; }
+        pre { background: #0f172a; color: #e2e8f0; padding: 20px; border-radius: 12px; overflow-x: auto; margin: 20px 0; font-size: 0.85rem; line-height: 1.6; }
+        .step-box { padding: 20px; background: #f8fafc; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid #3b82f6; }
+        .warning-box { padding: 16px 20px; background: #fef2f2; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ef4444; }
+        .tip-box { padding: 16px 20px; background: #f0fdf4; border-radius: 8px; margin: 20px 0; border-left: 4px solid #22c55e; }
+        .cta-box { background: linear-gradient(135deg, #0f172a, #1e293b); border-radius: 16px; padding: 32px; text-align: center; margin: 40px 0; color: white; }
+        .cta-btn { display: inline-block; padding: 16px 40px; background: linear-gradient(135deg, #2563eb, #7c3aed); color: white; font-weight: 700; border-radius: 12px; text-decoration: none; font-size: 1.1rem; }
+        .cta-btn:hover { opacity: 0.9; }
+        .breadcrumb { font-size: 0.85rem; color: #64748b; margin-bottom: 24px; }
+        .nav { padding: 16px 20px; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: space-between; }
+        .nav a { color: #2563eb; text-decoration: none; font-weight: 600; }
+    </style>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "How to Fix Mixed Content Warnings on Your Website",
+        "description": "Step-by-step guide to finding and fixing mixed content warnings on HTTPS websites.",
+        "step": [
+            {"@type": "HowToStep", "name": "Identify mixed content", "text": "Open your site in Chrome, press F12, and check the Console tab for mixed content warnings."},
+            {"@type": "HowToStep", "name": "Find the offending URLs", "text": "Each warning shows the exact HTTP URL that needs to be updated to HTTPS."},
+            {"@type": "HowToStep", "name": "Update URLs to HTTPS", "text": "Change http:// to https:// in your content, or use protocol-relative URLs."},
+            {"@type": "HowToStep", "name": "Search your database", "text": "For WordPress, use Better Search Replace to find and fix all http:// references."},
+            {"@type": "HowToStep", "name": "Add upgrade-insecure-requests", "text": "Add the Content-Security-Policy header as a safety net for any remaining HTTP resources."}
+        ]
+    }
+    </script>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">Summit Web Audit</a>
+        <div>
+            <a href="/check" style="margin-right: 16px;">Free Check</a>
+            <a href="/blog">Blog</a>
+        </div>
+    </div>
+    <div class="container">
+        <div class="breadcrumb"><a href="/">Home</a> → <a href="/blog">Blog</a> → How to Fix Mixed Content Warnings</div>
+
+        <h1>How to Fix Mixed Content Warnings on Your Website (Step-by-Step)</h1>
+        <p style="color: #64748b; font-size: 0.9rem;">March 28, 2026 · 6 min read</p>
+
+        <p>You installed an SSL certificate. Your site shows the padlock icon. But something's wrong — browsers are still flagging warnings, and your "secure" site doesn't feel so secure.</p>
+
+        <p>The culprit? <strong>Mixed content.</strong></p>
+
+        <div class="warning-box">
+            <strong>What is mixed content?</strong> It's when your HTTPS website loads some resources (images, scripts, stylesheets, fonts) over plain HTTP. The page itself is encrypted, but individual resources are not — creating a security gap that browsers warn visitors about.
+        </div>
+
+        <h2>Why Mixed Content Is a Problem</h2>
+
+        <ul>
+            <li><strong>Browser warnings scare visitors.</strong> Chrome, Firefox, and Safari all show warnings or block mixed content entirely. Visitors see "Not fully secure" messages.</li>
+            <li><strong>Google penalizes it.</strong> Mixed content is a negative ranking signal. Google wants fully encrypted pages.</li>
+            <li><strong>It's a real security risk.</strong> An attacker on the same network can intercept or modify HTTP resources — injecting malicious scripts into an otherwise "secure" page.</li>
+            <li><strong>Modern browsers block it.</strong> As of Chrome 86+, mixed content images are auto-upgraded to HTTPS, and mixed scripts/iframes are blocked outright. Your content may simply not load.</li>
+        </ul>
+
+        <h2>Two Types of Mixed Content</h2>
+
+        <h3>🔴 Active Mixed Content (Blocked by Default)</h3>
+        <p>Scripts, stylesheets, iframes, and other resources that can change the page. Browsers <strong>block these automatically</strong> — meaning parts of your site may be broken without you knowing.</p>
+        <pre>&lt;script src="http://example.com/script.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="http://example.com/style.css"&gt;
+&lt;iframe src="http://example.com/embed"&gt;&lt;/iframe&gt;</pre>
+
+        <h3>🟡 Passive Mixed Content (Warning Only)</h3>
+        <p>Images, audio, and video. Browsers show a warning but usually still load them (or auto-upgrade to HTTPS).</p>
+        <pre>&lt;img src="http://example.com/photo.jpg"&gt;
+&lt;audio src="http://example.com/track.mp3"&gt;</pre>
+
+        <h2>Step-by-Step Fix</h2>
+
+        <div class="step-box">
+            <h3 style="margin-top: 0;">Step 1: Find All Mixed Content</h3>
+            <p>Open your website in Chrome and press <code>F12</code> to open Developer Tools. Go to the <strong>Console</strong> tab. Mixed content warnings appear in yellow/red with the exact URLs that need fixing.</p>
+            <p>Look for messages like:</p>
+            <pre style="font-size: 0.8rem;">Mixed Content: The page at 'https://yoursite.com/' was loaded over HTTPS, but requested an insecure image 'http://yoursite.com/logo.png'.</pre>
+            <p style="margin-bottom: 0;">Alternatively, <a href="/check">run a free Summit Web Audit scan</a> — we detect mixed content automatically.</p>
+        </div>
+
+        <div class="step-box">
+            <h3 style="margin-top: 0;">Step 2: Update HTTP URLs to HTTPS</h3>
+            <p>For each flagged resource, change <code>http://</code> to <code>https://</code>. Common places to check:</p>
+            <ul>
+                <li><strong>Image URLs</strong> in your content (blog posts, pages)</li>
+                <li><strong>CSS and JS files</strong> in your theme or template</li>
+                <li><strong>Embedded videos</strong> or iframes</li>
+                <li><strong>Font URLs</strong> (Google Fonts, custom fonts)</li>
+                <li><strong>Third-party widgets</strong> (chat, analytics, maps)</li>
+            </ul>
+            <p style="margin-bottom: 0;"><strong>Pro tip:</strong> Use protocol-relative URLs (<code>//example.com/file.js</code>) to automatically match the page's protocol — though explicit HTTPS is preferred.</p>
+        </div>
+
+        <div class="step-box">
+            <h3 style="margin-top: 0;">Step 3: Fix Your Database (WordPress)</h3>
+            <p>If you're on WordPress, old content often contains hardcoded <code>http://</code> URLs from before you installed SSL. Use the free <strong>Better Search Replace</strong> plugin:</p>
+            <ol>
+                <li>Install and activate Better Search Replace</li>
+                <li>Search for: <code>http://yourdomain.com</code></li>
+                <li>Replace with: <code>https://yourdomain.com</code></li>
+                <li>Select all database tables</li>
+                <li>Run a dry run first, then execute</li>
+            </ol>
+            <p style="margin-bottom: 0;"><strong>⚠️ Back up your database before doing this.</strong></p>
+        </div>
+
+        <div class="step-box">
+            <h3 style="margin-top: 0;">Step 4: Update Your .htaccess or Server Config</h3>
+            <p>Force all HTTP traffic to HTTPS with a redirect:</p>
+            <p><strong>Apache (.htaccess):</strong></p>
+            <pre>RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]</pre>
+            <p><strong>Nginx:</strong></p>
+            <pre>server {
+    listen 80;
+    server_name yourdomain.com;
+    return 301 https://$server_name$request_uri;
+}</pre>
+        </div>
+
+        <div class="step-box">
+            <h3 style="margin-top: 0;">Step 5: Add the Safety Net Header</h3>
+            <p>As a final catch-all, add this <a href="/blog/website-security-headers-explained">security header</a> to automatically upgrade any remaining HTTP requests:</p>
+            <pre>Content-Security-Policy: upgrade-insecure-requests</pre>
+            <p style="margin-bottom: 0;">This tells browsers to silently upgrade any HTTP resource requests to HTTPS — catching anything you might have missed.</p>
+        </div>
+
+        <div class="tip-box">
+            <strong>Quick win:</strong> If you use Cloudflare, enable <strong>"Always Use HTTPS"</strong> and <strong>"Automatic HTTPS Rewrites"</strong> in the SSL/TLS settings. This handles most mixed content issues automatically, no code changes needed.
+        </div>
+
+        <h2>How to Verify the Fix</h2>
+
+        <ol>
+            <li>Clear your browser cache (<code>Ctrl+Shift+Delete</code>)</li>
+            <li>Reload your site and check the Console in Developer Tools</li>
+            <li>Look for the clean padlock icon — no warnings</li>
+            <li><a href="/check">Run another free scan</a> to confirm mixed content is resolved</li>
+        </ol>
+
+        <h2>Preventing Mixed Content in the Future</h2>
+
+        <ul>
+            <li><strong>Always use HTTPS URLs</strong> when adding images, embeds, or third-party scripts</li>
+            <li><strong>Update your WordPress Site URL</strong> to use <code>https://</code> in Settings → General</li>
+            <li><strong>Check third-party services</strong> — make sure any external widget, font, or API uses HTTPS</li>
+            <li><strong>Set the CSP header</strong> with <code>upgrade-insecure-requests</code> as a permanent safety net</li>
+        </ul>
+
+        <div class="cta-box">
+            <h2 style="color: white; margin-top: 0;">Scan Your Site for Mixed Content — Free</h2>
+            <p style="color: #94a3b8;">Our scanner detects mixed content, missing security headers, and 16 other issues. Results in 30 seconds.</p>
+            <a href="/check" class="cta-btn">Check Your Site →</a>
+            <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 0; margin-top: 16px;">Full report with fix instructions: <a href="/pricing" style="color: #93c5fd;">just $9</a></p>
+        </div>
+
+        <p style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #64748b; font-size: 0.9rem;">
+            <strong>Related:</strong> <a href="/blog/website-security-headers-explained">Website Security Headers Explained</a> · <a href="/blog/what-is-a-website-health-score">What Is a Website Health Score?</a> · <a href="/check">Free Website Audit Tool</a>
+        </p>
+    </div>
+</body>
+</html>
