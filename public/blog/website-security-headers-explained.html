@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Security Headers Explained: What They Are and Why Your Site Needs Them — Summit Web Audit</title>
+    <meta name="description" content="Security headers protect your website from clickjacking, XSS, and data theft. Learn what they are, which ones matter, and how to add them in 10 minutes.">
+    <meta property="og:title" content="Website Security Headers Explained">
+    <meta property="og:description" content="Most small business websites have zero security headers. Here's what they are and how to add them in 10 minutes.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://summitwebaudit.com/blog/website-security-headers-explained">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@SummitWebAudit">
+    <link rel="canonical" href="https://summitwebaudit.com/blog/website-security-headers-explained">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1f2937; line-height: 1.8; background: #fff; }
+        .container { max-width: 720px; margin: 0 auto; padding: 40px 20px; }
+        h1 { font-size: 32px; font-weight: 800; margin-bottom: 16px; line-height: 1.2; color: #0f172a; }
+        h2 { font-size: 24px; font-weight: 700; margin: 36px 0 16px; color: #0f172a; }
+        h3 { font-size: 20px; font-weight: 600; margin: 28px 0 12px; color: #1e293b; }
+        p { margin-bottom: 16px; }
+        a { color: #2563eb; }
+        ul, ol { margin-bottom: 16px; padding-left: 24px; }
+        li { margin-bottom: 8px; }
+        code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 0.9rem; }
+        pre { background: #0f172a; color: #e2e8f0; padding: 20px; border-radius: 12px; overflow-x: auto; margin: 20px 0; font-size: 0.85rem; line-height: 1.6; }
+        .header-card { padding: 20px; background: #f8fafc; border-radius: 12px; margin-bottom: 16px; border-left: 4px solid #3b82f6; }
+        .header-card.critical { border-left-color: #ef4444; background: #fef2f2; }
+        .header-card.important { border-left-color: #f59e0b; background: #fffbeb; }
+        .header-card.nice { border-left-color: #22c55e; background: #f0fdf4; }
+        .cta-box { background: linear-gradient(135deg, #0f172a, #1e293b); border-radius: 16px; padding: 32px; text-align: center; margin: 40px 0; color: white; }
+        .cta-btn { display: inline-block; padding: 16px 40px; background: linear-gradient(135deg, #2563eb, #7c3aed); color: white; font-weight: 700; border-radius: 12px; text-decoration: none; font-size: 1.1rem; }
+        .cta-btn:hover { opacity: 0.9; }
+        .breadcrumb { font-size: 0.85rem; color: #64748b; margin-bottom: 24px; }
+        .warning-box { padding: 16px 20px; background: #fef2f2; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ef4444; }
+        .tip-box { padding: 16px 20px; background: #eff6ff; border-radius: 8px; margin: 20px 0; border-left: 4px solid #2563eb; }
+        .nav { padding: 16px 20px; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: space-between; }
+        .nav a { color: #2563eb; text-decoration: none; font-weight: 600; }
+    </style>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Website Security Headers Explained: What They Are and Why Your Site Needs Them",
+        "description": "Security headers protect your website from clickjacking, XSS, and data theft. Learn what they are, which ones matter, and how to add them.",
+        "author": {"@type": "Organization", "name": "Summit Web Audit"},
+        "publisher": {"@type": "Organization", "name": "Summit Web Audit", "url": "https://summitwebaudit.com"},
+        "datePublished": "2026-03-28",
+        "mainEntityOfPage": "https://summitwebaudit.com/blog/website-security-headers-explained"
+    }
+    </script>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">Summit Web Audit</a>
+        <div>
+            <a href="/check" style="margin-right: 16px;">Free Check</a>
+            <a href="/blog">Blog</a>
+        </div>
+    </div>
+    <div class="container">
+        <div class="breadcrumb"><a href="/">Home</a> → <a href="/blog">Blog</a> → Website Security Headers Explained</div>
+
+        <h1>Website Security Headers Explained: What They Are and Why Your Site Needs Them</h1>
+        <p style="color: #64748b; font-size: 0.9rem;">March 28, 2026 · 7 min read</p>
+
+        <p>Your website has HTTPS. Great. But that's only half the security equation.</p>
+
+        <p><strong>Security headers</strong> are invisible instructions your web server sends to browsers that say "here's how to handle my content safely." Without them, your site is vulnerable to clickjacking, cross-site scripting (XSS), data injection, and more — even with a valid SSL certificate.</p>
+
+        <div class="warning-box">
+            <strong>The uncomfortable truth:</strong> When we scan small business websites, over 85% have zero security headers configured. This is one of the most common issues we find — and one of the easiest to fix.
+        </div>
+
+        <h2>Why Should You Care?</h2>
+
+        <p>Security headers matter for three reasons:</p>
+
+        <ol>
+            <li><strong>They protect your visitors.</strong> Without proper headers, attackers can embed your site in a fake page (clickjacking), inject malicious scripts, or intercept data.</li>
+            <li><strong>They protect your reputation.</strong> If your site gets compromised, you lose customer trust. For healthcare, legal, or financial businesses, this can be catastrophic.</li>
+            <li><strong>They affect your SEO.</strong> Google considers site security as a ranking signal. Security-conscious sites rank better over time.</li>
+        </ol>
+
+        <h2>The Essential Security Headers</h2>
+
+        <p>Here are the headers that matter most for small business websites, ranked by importance:</p>
+
+        <div class="header-card critical">
+            <h3 style="margin-top: 0;">🔴 Strict-Transport-Security (HSTS)</h3>
+            <p><strong>What it does:</strong> Forces browsers to always use HTTPS, even if someone types <code>http://</code>. Prevents man-in-the-middle attacks.</p>
+            <p><strong>Why it matters:</strong> Without HSTS, a user's first visit might happen over unencrypted HTTP before redirecting to HTTPS — a window where data can be intercepted.</p>
+            <pre>Strict-Transport-Security: max-age=31536000; includeSubDomains</pre>
+            <p style="margin-bottom: 0;"><strong>Priority:</strong> Critical — add this first if you have HTTPS (and you should).</p>
+        </div>
+
+        <div class="header-card critical">
+            <h3 style="margin-top: 0;">🔴 X-Content-Type-Options</h3>
+            <p><strong>What it does:</strong> Prevents browsers from "guessing" what type of file they're loading. Stops MIME-type sniffing attacks.</p>
+            <p><strong>Why it matters:</strong> Without this, an attacker could trick a browser into executing a malicious file disguised as an image or stylesheet.</p>
+            <pre>X-Content-Type-Options: nosniff</pre>
+            <p style="margin-bottom: 0;"><strong>Priority:</strong> Critical — one line, zero risk, massive protection.</p>
+        </div>
+
+        <div class="header-card important">
+            <h3 style="margin-top: 0;">🟡 X-Frame-Options</h3>
+            <p><strong>What it does:</strong> Prevents your site from being embedded in an iframe on another site. Blocks clickjacking attacks.</p>
+            <p><strong>Why it matters:</strong> Without this, an attacker can overlay your login page or checkout form with invisible elements, tricking users into clicking the wrong thing.</p>
+            <pre>X-Frame-Options: SAMEORIGIN</pre>
+            <p style="margin-bottom: 0;"><strong>Priority:</strong> High — especially if your site has forms, logins, or payment processing.</p>
+        </div>
+
+        <div class="header-card important">
+            <h3 style="margin-top: 0;">🟡 Content-Security-Policy (CSP)</h3>
+            <p><strong>What it does:</strong> Tells browsers exactly which sources of content (scripts, images, fonts) are allowed to load. The most powerful header — but also the most complex.</p>
+            <p><strong>Why it matters:</strong> Blocks cross-site scripting (XSS) attacks by preventing unauthorized scripts from running on your page.</p>
+            <pre>Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'</pre>
+            <p style="margin-bottom: 0;"><strong>Priority:</strong> High — but start with a permissive policy and tighten over time. A misconfigured CSP can break your site.</p>
+        </div>
+
+        <div class="header-card nice">
+            <h3 style="margin-top: 0;">🟢 Referrer-Policy</h3>
+            <p><strong>What it does:</strong> Controls how much URL information is shared when a user clicks a link from your site to another site.</p>
+            <p><strong>Why it matters:</strong> Prevents leaking sensitive URL parameters (like search queries or session tokens) to third-party sites.</p>
+            <pre>Referrer-Policy: strict-origin-when-cross-origin</pre>
+            <p style="margin-bottom: 0;"><strong>Priority:</strong> Good to have — protects privacy without breaking anything.</p>
+        </div>
+
+        <div class="header-card nice">
+            <h3 style="margin-top: 0;">🟢 Permissions-Policy</h3>
+            <p><strong>What it does:</strong> Controls which browser features (camera, microphone, geolocation) your site is allowed to use.</p>
+            <p><strong>Why it matters:</strong> If your site doesn't need the camera, explicitly disabling it prevents compromised scripts from accessing it.</p>
+            <pre>Permissions-Policy: camera=(), microphone=(), geolocation=()</pre>
+            <p style="margin-bottom: 0;"><strong>Priority:</strong> Nice to have — defense in depth.</p>
+        </div>
+
+        <h2>How to Check Your Headers</h2>
+
+        <p>The fastest way: <a href="/check">run a free scan on Summit Web Audit</a>. We check for all the headers above and flag which ones are missing.</p>
+
+        <p>You can also check manually using your browser's Developer Tools:</p>
+        <ol>
+            <li>Open your website in Chrome or Firefox</li>
+            <li>Press <code>F12</code> to open Developer Tools</li>
+            <li>Go to the <strong>Network</strong> tab</li>
+            <li>Reload the page</li>
+            <li>Click the first request (your domain name)</li>
+            <li>Look at <strong>Response Headers</strong></li>
+        </ol>
+
+        <p>If you don't see headers like <code>Strict-Transport-Security</code>, <code>X-Content-Type-Options</code>, or <code>X-Frame-Options</code>, they're not configured.</p>
+
+        <h2>How to Add Security Headers</h2>
+
+        <div class="tip-box">
+            <strong>The good news:</strong> Adding security headers usually takes 5-10 minutes and doesn't require changing any of your website content. It's a server configuration change.
+        </div>
+
+        <h3>Apache (.htaccess)</h3>
+        <pre>Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+Header always set X-Content-Type-Options "nosniff"
+Header always set X-Frame-Options "SAMEORIGIN"
+Header always set Referrer-Policy "strict-origin-when-cross-origin"
+Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"</pre>
+
+        <h3>Nginx</h3>
+        <pre>add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+add_header X-Content-Type-Options "nosniff" always;
+add_header X-Frame-Options "SAMEORIGIN" always;
+add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+add_header Permissions-Policy "camera=(), microphone=(), geolocation=()" always;</pre>
+
+        <h3>WordPress</h3>
+        <p>If you're on WordPress, the easiest approach is the <strong>Headers Security Advanced & HSTS WP</strong> plugin — it lets you configure all these headers from the dashboard without editing server config files.</p>
+
+        <h3>Cloudflare</h3>
+        <p>If you use Cloudflare, you can add security headers via <strong>Transform Rules</strong> (Response Headers) in the dashboard. No server changes needed.</p>
+
+        <h2>Common Mistakes to Avoid</h2>
+
+        <ul>
+            <li><strong>Don't start with a strict CSP.</strong> Content-Security-Policy can break your site if it blocks scripts you actually need (like Google Analytics or your chat widget). Start with <code>Content-Security-Policy-Report-Only</code> to test first.</li>
+            <li><strong>Don't forget HSTS preloading requirements.</strong> To submit your site to the HSTS preload list, you need <code>max-age</code> of at least 1 year, <code>includeSubDomains</code>, and <code>preload</code> directive.</li>
+            <li><strong>Test after adding headers.</strong> Check that your forms still work, images still load, and third-party widgets (maps, chat, analytics) still function.</li>
+        </ul>
+
+        <div class="cta-box">
+            <h2 style="color: white; margin-top: 0;">Check Your Security Headers — Free</h2>
+            <p style="color: #94a3b8;">Our scanner checks for all major security headers plus 12 other categories. Results in 30 seconds.</p>
+            <a href="/check" class="cta-btn">Scan Your Site →</a>
+            <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 0; margin-top: 16px;">Want fix instructions for every issue? <a href="/pricing" style="color: #93c5fd;">Full audit report — $9</a></p>
+        </div>
+
+        <h2>Quick Summary</h2>
+
+        <p>Here's your security headers checklist:</p>
+        <ul>
+            <li>✅ <code>Strict-Transport-Security</code> — force HTTPS</li>
+            <li>✅ <code>X-Content-Type-Options: nosniff</code> — prevent MIME sniffing</li>
+            <li>✅ <code>X-Frame-Options: SAMEORIGIN</code> — block clickjacking</li>
+            <li>✅ <code>Content-Security-Policy</code> — control allowed content sources</li>
+            <li>✅ <code>Referrer-Policy</code> — protect URL privacy</li>
+            <li>✅ <code>Permissions-Policy</code> — disable unused browser APIs</li>
+        </ul>
+
+        <p>Adding these takes 10 minutes and instantly upgrades your website's security posture. It's one of the highest-impact, lowest-effort changes you can make.</p>
+
+        <p style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #64748b; font-size: 0.9rem;">
+            <strong>About Summit Web Audit:</strong> We help small businesses understand and improve their website's health through automated audits. <a href="/check">Try the free checker</a> or read more guides on our <a href="/blog">blog</a>.
+        </p>
+    </div>
+</body>
+</html>
