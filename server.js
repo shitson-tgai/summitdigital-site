@@ -732,6 +732,24 @@ app.get('/blog/how-much-does-website-audit-cost', (req, res) => {
 app.get('/blog/free-website-audit-tool-small-business', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'blog', 'free-website-audit-tool-small-business.html'));
 });
+app.get('/blog/chiropractor-website-security-hipaa', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'blog', 'chiropractor-website-security-hipaa.html'));
+});
+app.get('/blog/free-website-seo-tools-compared', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'blog', 'free-website-seo-tools-compared.html'));
+});
+app.get('/blog/what-is-a-website-health-score', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'blog', 'what-is-a-website-health-score.html'));
+});
+app.get('/blog/website-security-headers-explained', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'blog', 'website-security-headers-explained.html'));
+});
+app.get('/blog/how-to-fix-mixed-content-warnings', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'blog', 'how-to-fix-mixed-content-warnings.html'));
+});
+app.get('/blog/wordpress-security-checklist-small-business', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'blog', 'wordpress-security-checklist-small-business.html'));
+});
 
 // Block common vulnerability probes
 app.use((req, res, next) => {
