@@ -755,6 +755,10 @@ app.get('/blog/google-pagespeed-score-improve', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'blog', 'google-pagespeed-score-improve.html'));
 });
 
+app.get('/blog/how-to-run-a-website-audit', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'blog', 'how-to-run-a-website-audit.html'));
+});
+
 // Block common vulnerability probes
 app.use((req, res, next) => {
   const blocked = ['.env', 'wp-login', 'wp-admin', 'xmlrpc', 'wlwmanifest', '.git', '.sql', 'phpmyadmin'];

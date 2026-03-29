@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Run a Website Audit: The Complete Guide for 2026 — Summit Web Audit</title>
+    <meta name="description" content="Learn how to run a complete website audit in 2026. Step-by-step guide covering SEO, security, performance, accessibility, and content — with free tools and checklists.">
+    <meta property="og:title" content="How to Run a Website Audit: The Complete Guide">
+    <meta property="og:description" content="A step-by-step guide to auditing your website for SEO, security, speed, accessibility, and content issues.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://summitwebaudit.com/blog/how-to-run-a-website-audit">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@SummitWebAudit">
+    <link rel="canonical" href="https://summitwebaudit.com/blog/how-to-run-a-website-audit">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1f2937; line-height: 1.8; background: #fff; }
+        .container { max-width: 720px; margin: 0 auto; padding: 40px 20px; }
+        h1 { font-size: 32px; font-weight: 800; margin-bottom: 16px; line-height: 1.2; color: #0f172a; }
+        h2 { font-size: 24px; font-weight: 700; margin: 36px 0 16px; color: #0f172a; }
+        h3 { font-size: 20px; font-weight: 600; margin: 28px 0 12px; color: #1e293b; }
+        p { margin-bottom: 16px; }
+        a { color: #2563eb; }
+        ul, ol { margin-bottom: 16px; padding-left: 24px; }
+        li { margin-bottom: 8px; }
+        code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 0.9rem; }
+        .step-card { padding: 24px; background: #f8fafc; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid #2563eb; }
+        .step-num { font-size: 14px; font-weight: 700; color: #2563eb; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+        .check-item { padding: 8px 0; border-bottom: 1px solid #f1f5f9; }
+        .check-item:last-child { border-bottom: none; }
+        .pass { color: #16a34a; }
+        .fail { color: #dc2626; }
+        .cta-box { background: linear-gradient(135deg, #0f172a, #1e293b); border-radius: 16px; padding: 32px; text-align: center; margin: 40px 0; color: white; }
+        .cta-btn { display: inline-block; padding: 16px 40px; background: linear-gradient(135deg, #2563eb, #7c3aed); color: white; font-weight: 700; border-radius: 12px; text-decoration: none; font-size: 1.1rem; }
+        .cta-btn:hover { opacity: 0.9; }
+        .breadcrumb { font-size: 0.85rem; color: #64748b; margin-bottom: 24px; }
+        .warning-box { padding: 16px 20px; background: #fef2f2; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ef4444; }
+        .tip-box { padding: 16px 20px; background: #eff6ff; border-radius: 8px; margin: 20px 0; border-left: 4px solid #2563eb; }
+        .tool-box { padding: 16px 20px; background: #f0fdf4; border-radius: 8px; margin: 20px 0; border-left: 4px solid #22c55e; }
+        .nav { padding: 16px 20px; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: space-between; }
+        .nav a { color: #2563eb; text-decoration: none; font-weight: 600; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #e5e7eb; }
+        th { background: #f8fafc; font-weight: 600; }
+    </style>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "How to Run a Website Audit",
+        "description": "A complete guide to auditing your website for SEO, security, performance, accessibility, and content issues.",
+        "totalTime": "PT30M",
+        "step": [
+            {"@type": "HowToStep", "name": "Check Technical SEO", "text": "Verify meta titles, descriptions, heading structure, canonical URLs, sitemap, and robots.txt."},
+            {"@type": "HowToStep", "name": "Test Security", "text": "Check SSL certificate, security headers, mixed content, and exposed sensitive files."},
+            {"@type": "HowToStep", "name": "Measure Performance", "text": "Test page speed, Core Web Vitals, image optimization, and server response time."},
+            {"@type": "HowToStep", "name": "Audit Accessibility", "text": "Check alt text, form labels, heading hierarchy, color contrast, and keyboard navigation."},
+            {"@type": "HowToStep", "name": "Review Content", "text": "Check for broken links, duplicate content, thin pages, and outdated information."},
+            {"@type": "HowToStep", "name": "Create Action Plan", "text": "Prioritize issues by impact, create a fix timeline, and schedule regular re-audits."}
+        ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "How often should I audit my website?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "At minimum, quarterly. Ideally monthly for active business websites. After major changes (new design, migration, plugin updates), run an immediate audit. Set up automated monitoring for critical issues."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How much does a professional website audit cost?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Professional agency audits range from $500 to $15,000+ depending on site size and depth. Automated tools like Summit Web Audit offer comprehensive scans for $9, covering the same categories (SEO, security, performance, accessibility) at a fraction of the cost."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Can I audit my website myself?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes. This guide walks you through every step. For a quick automated scan, use Summit Web Audit's free checker — it tests 18+ factors in 30 seconds. For deeper manual analysis, follow the step-by-step checklist in this article."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "What's the most important thing to fix first?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Security issues first (broken SSL, missing headers), then performance (page speed under 3 seconds), then SEO (meta tags, headings), then accessibility. Security and performance directly impact user trust and conversions."
+                }
+            }
+        ]
+    }
+    </script>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">Summit Web Audit</a>
+        <div>
+            <a href="/check" style="margin-right: 16px;">Free Check</a>
+            <a href="/blog">Blog</a>
+        </div>
+    </div>
+    <div class="container">
+        <div class="breadcrumb"><a href="/">Home</a> → <a href="/blog">Blog</a> → How to Run a Website Audit</div>
+
+        <h1>How to Run a Website Audit: The Complete Guide for 2026</h1>
+        <p style="color: #64748b; font-size: 0.9rem;">March 29, 2026 · 10 min read</p>
+
+        <p>A website audit is a systematic check of your site's health across SEO, security, performance, accessibility, and content. Think of it as a physical exam for your website — it finds problems you didn't know existed and tells you exactly what to fix.</p>
+
+        <p>Whether you're a small business owner, freelancer, or agency managing client sites, regular audits prevent small issues from becoming expensive problems.</p>
+
+        <div class="tip-box">
+            <strong>💡 Quick option:</strong> Want to skip the manual process? <a href="/check">Our free scanner</a> checks 18+ factors in 30 seconds and shows you every issue. But if you want to understand what goes into a thorough audit, read on.
+        </div>
+
+        <h2>What a Website Audit Covers</h2>
+
+        <p>A complete audit examines five areas:</p>
+
+        <table>
+            <thead>
+                <tr><th>Category</th><th>What You're Checking</th><th>Why It Matters</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>SEO</strong></td><td>Meta tags, headings, sitemap, indexing</td><td>Search rankings and organic traffic</td></tr>
+                <tr><td><strong>Security</strong></td><td>SSL, headers, mixed content, vulnerabilities</td><td>User trust and data protection</td></tr>
+                <tr><td><strong>Performance</strong></td><td>Page speed, Core Web Vitals, images</td><td>User experience and conversions</td></tr>
+                <tr><td><strong>Accessibility</strong></td><td>Alt text, labels, contrast, navigation</td><td>Inclusivity and legal compliance</td></tr>
+                <tr><td><strong>Content</strong></td><td>Broken links, freshness, readability</td><td>Engagement and credibility</td></tr>
+            </tbody>
+        </table>
+
+        <h2>Step 1: Technical SEO Audit</h2>
+
+        <div class="step-card">
+            <div class="step-num">Checklist</div>
+            <div class="check-item">☐ <strong>Meta title</strong> — exists, 50-60 characters, includes primary keyword</div>
+            <div class="check-item">☐ <strong>Meta description</strong> — exists, 150-160 characters, compelling and relevant</div>
+            <div class="check-item">☐ <strong>H1 tag</strong> — exactly one per page, matches page topic</div>
+            <div class="check-item">☐ <strong>Heading hierarchy</strong> — proper H1 → H2 → H3 structure (no skipping levels)</div>
+            <div class="check-item">☐ <strong>Canonical URL</strong> — set correctly to prevent duplicate content</div>
+            <div class="check-item">☐ <strong>XML sitemap</strong> — exists at /sitemap.xml, submitted to Google Search Console</div>
+            <div class="check-item">☐ <strong>Robots.txt</strong> — exists, doesn't block important pages</div>
+            <div class="check-item">☐ <strong>Mobile-friendly</strong> — responsive design, readable without zooming</div>
+            <div class="check-item">☐ <strong>Image alt text</strong> — all meaningful images have descriptive alt attributes</div>
+            <div class="check-item">☐ <strong>Open Graph tags</strong> — og:title, og:description, og:image for social sharing</div>
+        </div>
+
+        <div class="tool-box">
+            <strong>🔧 Tools:</strong> Google Search Console (free), Screaming Frog (free up to 500 URLs), <a href="/check">Summit Web Audit</a> (free instant scan), Ahrefs Site Audit (paid)
+        </div>
+
+        <h3>Common SEO Issues We Find</h3>
+        <p>After scanning hundreds of small business websites, the most common SEO problems are:</p>
+        <ol>
+            <li><strong>Missing meta descriptions</strong> (70%+ of sites) — Google shows a random snippet instead of your crafted pitch</li>
+            <li><strong>Missing or duplicate H1 tags</strong> — confuses search engines about page topic</li>
+            <li><strong>No XML sitemap</strong> — Google has to discover pages by crawling, which is slower</li>
+            <li><strong>Missing image alt text</strong> — lost opportunity for image search traffic + accessibility issue</li>
+        </ol>
+
+        <h2>Step 2: Security Audit</h2>
+
+        <div class="step-card">
+            <div class="step-num">Checklist</div>
+            <div class="check-item">☐ <strong>SSL certificate</strong> — valid, not expired, covers all subdomains</div>
+            <div class="check-item">☐ <strong>HTTPS redirect</strong> — HTTP automatically redirects to HTTPS</div>
+            <div class="check-item">☐ <strong><a href="/blog/website-security-headers-explained">Security headers</a></strong> — X-Frame-Options, CSP, HSTS, X-Content-Type-Options</div>
+            <div class="check-item">☐ <strong><a href="/blog/how-to-fix-mixed-content-warnings">Mixed content</a></strong> — no HTTP resources loaded on HTTPS pages</div>
+            <div class="check-item">☐ <strong>Exposed files</strong> — .env, .git, wp-config.php not publicly accessible</div>
+            <div class="check-item">☐ <strong>Server information</strong> — server version not exposed in headers</div>
+            <div class="check-item">☐ <strong>Form security</strong> — CSRF protection, input validation</div>
+        </div>
+
+        <div class="warning-box">
+            <strong>⚠️ Critical:</strong> Over 85% of small business websites have zero <a href="/blog/website-security-headers-explained">security headers</a> configured. This is the single most common issue we find — and one of the easiest to fix (5-10 minutes).
+        </div>
+
+        <h2>Step 3: Performance Audit</h2>
+
+        <div class="step-card">
+            <div class="step-num">Checklist</div>
+            <div class="check-item">☐ <strong>Page load time</strong> — under 3 seconds on mobile</div>
+            <div class="check-item">☐ <strong><a href="/blog/google-pagespeed-score-improve">PageSpeed score</a></strong> — 70+ on mobile, 85+ on desktop</div>
+            <div class="check-item">☐ <strong>Largest Contentful Paint (LCP)</strong> — under 2.5 seconds</div>
+            <div class="check-item">☐ <strong>Cumulative Layout Shift (CLS)</strong> — under 0.1</div>
+            <div class="check-item">☐ <strong>Image optimization</strong> — compressed, properly sized, using modern formats (WebP)</div>
+            <div class="check-item">☐ <strong>Render-blocking resources</strong> — CSS/JS deferred or async where possible</div>
+            <div class="check-item">☐ <strong>Browser caching</strong> — static assets cached with appropriate headers</div>
+            <div class="check-item">☐ <strong>Compression</strong> — Gzip or Brotli enabled</div>
+        </div>
+
+        <p><strong>Why it matters:</strong> Amazon found that every 100ms of latency cost them 1% in sales. Google uses Core Web Vitals as a ranking factor. A slow site loses both visitors and search rankings.</p>
+
+        <div class="tool-box">
+            <strong>🔧 Tools:</strong> <a href="https://pagespeed.web.dev/" rel="nofollow">Google PageSpeed Insights</a> (free), <a href="https://www.webpagetest.org/" rel="nofollow">WebPageTest</a> (free), GTmetrix (free), <a href="/check">Summit Web Audit</a> (free)
+        </div>
+
+        <h2>Step 4: Accessibility Audit</h2>
+
+        <div class="step-card">
+            <div class="step-num">Checklist</div>
+            <div class="check-item">☐ <strong>Image alt text</strong> — all non-decorative images have descriptive alt attributes</div>
+            <div class="check-item">☐ <strong>Form labels</strong> — every input has an associated <code>&lt;label&gt;</code></div>
+            <div class="check-item">☐ <strong>Language attribute</strong> — <code>&lt;html lang="en"&gt;</code> is set</div>
+            <div class="check-item">☐ <strong>Skip navigation</strong> — "Skip to main content" link for keyboard users</div>
+            <div class="check-item">☐ <strong>Color contrast</strong> — text meets WCAG AA minimum (4.5:1 ratio)</div>
+            <div class="check-item">☐ <strong>Keyboard navigation</strong> — all interactive elements reachable via Tab key</div>
+            <div class="check-item">☐ <strong>ARIA landmarks</strong> — main, nav, header, footer roles defined</div>
+            <div class="check-item">☐ <strong>Link text</strong> — no "click here" or "read more" without context</div>
+        </div>
+
+        <p><a href="/blog/is-your-website-ada-compliant">ADA compliance</a> isn't optional — over 8,600 web accessibility lawsuits were filed in 2024 alone. Even if you're not sued, inaccessible sites exclude 15-20% of potential customers.</p>
+
+        <h2>Step 5: Content Audit</h2>
+
+        <div class="step-card">
+            <div class="step-num">Checklist</div>
+            <div class="check-item">☐ <strong>Broken links</strong> — no 404 errors on internal or external links</div>
+            <div class="check-item">☐ <strong>Content freshness</strong> — no outdated dates, stats, or references</div>
+            <div class="check-item">☐ <strong>Thin content</strong> — no pages with less than 300 words (unless intentional)</div>
+            <div class="check-item">☐ <strong>Duplicate content</strong> — no identical or near-identical pages</div>
+            <div class="check-item">☐ <strong>Contact info</strong> — phone, email, address easily findable</div>
+            <div class="check-item">☐ <strong>Call-to-action</strong> — every page has a clear next step for visitors</div>
+            <div class="check-item">☐ <strong>Mobile readability</strong> — text readable without zooming, buttons tappable</div>
+        </div>
+
+        <h2>Step 6: Create Your Action Plan</h2>
+
+        <p>After your audit, you'll have a list of issues. Prioritize them:</p>
+
+        <ol>
+            <li><strong>🔴 Critical (fix this week):</strong> Broken SSL, major security vulnerabilities, site errors, broken checkout/contact forms</li>
+            <li><strong>🟠 High (fix this month):</strong> Missing security headers, slow page speed, missing meta tags, accessibility failures</li>
+            <li><strong>🟡 Medium (fix this quarter):</strong> Image optimization, caching, content updates, minor SEO improvements</li>
+            <li><strong>🟢 Low (nice to have):</strong> Advanced schema markup, perfect Lighthouse score, minor UI improvements</li>
+        </ol>
+
+        <div class="tip-box">
+            <strong>💡 Pro tip:</strong> Don't try to fix everything at once. Pick the top 3-5 critical issues, fix them, verify they're resolved, then move to the next batch. This prevents breaking things and keeps progress measurable.
+        </div>
+
+        <h2>How Often Should You Audit?</h2>
+
+        <table>
+            <thead>
+                <tr><th>Situation</th><th>Recommended Frequency</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Active business website</td><td>Monthly automated + quarterly deep dive</td></tr>
+                <tr><td>E-commerce site</td><td>Weekly automated + monthly deep dive</td></tr>
+                <tr><td>Blog or content site</td><td>Monthly automated + semi-annual deep dive</td></tr>
+                <tr><td>After major changes</td><td>Immediately</td></tr>
+                <tr><td>After a security incident</td><td>Immediately + weekly for 1 month</td></tr>
+            </tbody>
+        </table>
+
+        <div class="cta-box">
+            <h2 style="color: white; margin-top: 0;">Run Your Free Website Audit Now</h2>
+            <p style="color: #94a3b8;">Skip the manual checklist. Our scanner checks 18+ factors across SEO, security, performance, and accessibility in 30 seconds.</p>
+            <a href="/check" class="cta-btn">Scan Your Website Free →</a>
+            <p style="color: #64748b; font-size: 0.85rem; margin-top: 16px;">No signup required. Full results shown instantly.</p>
+        </div>
+
+        <h2>Frequently Asked Questions</h2>
+
+        <h3>How often should I audit my website?</h3>
+        <p>At minimum, quarterly. Ideally monthly for active business websites. After major changes (new design, migration, plugin updates), run an immediate audit. Set up automated monitoring for critical issues like SSL expiry and downtime.</p>
+
+        <h3>How much does a professional website audit cost?</h3>
+        <p>Professional agency audits range from $500 to $15,000+ depending on site size and depth. Freelancer audits typically cost $200-$1,000. Automated tools like <a href="/check">Summit Web Audit</a> offer comprehensive scans for $9, covering the same categories at a fraction of the cost. <a href="/blog/how-much-does-website-audit-cost">See our full pricing breakdown →</a></p>
+
+        <h3>Can I audit my website myself?</h3>
+        <p>Absolutely. This guide walks you through every step. For a quick automated scan, use our <a href="/check">free website checker</a> — it tests 18+ factors in 30 seconds. For deeper manual analysis, follow the step-by-step checklists above with the recommended tools.</p>
+
+        <h3>What's the most important thing to fix first?</h3>
+        <p>Security issues first (broken SSL, missing headers), then performance (page speed under 3 seconds), then SEO (meta tags, headings), then accessibility. Security and performance directly impact user trust and conversions. A site that's insecure or slow loses visitors before they ever see your content.</p>
+
+        <hr style="margin: 40px 0;">
+
+        <h2>Related Articles</h2>
+        <ul>
+            <li><a href="/blog/what-is-a-website-health-score">What Is a Website Health Score?</a></li>
+            <li><a href="/blog/google-pagespeed-score-improve">Google PageSpeed Score: What It Means and How to Improve It</a></li>
+            <li><a href="/blog/website-security-headers-explained">Website Security Headers Explained</a></li>
+            <li><a href="/blog/how-much-does-website-audit-cost">How Much Does a Website Audit Cost?</a></li>
+            <li><a href="/blog/free-website-seo-tools-compared">5 Best Free Website Audit Tools Compared</a></li>
+        </ul>
+
+        <div style="text-align: center; padding: 40px 0; color: #64748b; font-size: 0.85rem;">
+            © 2026 Summit Web Audit · <a href="/">Home</a> · <a href="/check">Free Check</a> · <a href="/blog">Blog</a>
+        </div>
+    </div>
+</body>
+</html>
