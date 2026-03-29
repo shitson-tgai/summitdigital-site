@@ -751,6 +751,10 @@ app.get('/blog/wordpress-security-checklist-small-business', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'blog', 'wordpress-security-checklist-small-business.html'));
 });
 
+app.get('/blog/google-pagespeed-score-improve', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'blog', 'google-pagespeed-score-improve.html'));
+});
+
 // Block common vulnerability probes
 app.use((req, res, next) => {
   const blocked = ['.env', 'wp-login', 'wp-admin', 'xmlrpc', 'wlwmanifest', '.git', '.sql', 'phpmyadmin'];
