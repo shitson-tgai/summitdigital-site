@@ -343,18 +343,40 @@ app.post('/inbound', express.json(), async (req, res) => {
     const inboundLog = path.join(DATA_DIR, 'inbound-emails.jsonl');
     // Resend sends { type, created_at, data: { ...email fields } }
     const emailData = data.data || data;
+    const emailId = emailData.email_id || '';
+    
+    // Try to fetch full email body from Resend API if we have an email_id
+    let fullText = emailData.text || emailData.plain || '';
+    let fullHtml = emailData.html || '';
+    if (emailId && process.env.RESEND_API_KEY) {
+      try {
+        const fetch = require('node-fetch');
+        const resp = await fetch(`https://api.resend.com/emails/${emailId}`, {
+          headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}` }
+        });
+        if (resp.ok) {
+          const fullEmail = await resp.json();
+          fullText = fullEmail.text || fullText;
+          fullHtml = fullEmail.html || fullHtml;
+          console.log('Fetched full email body for', emailId);
+        }
+      } catch (fetchErr) {
+        console.log('Could not fetch email body:', fetchErr.message);
+      }
+    }
+    
     const logEntry = JSON.stringify({
       timestamp: new Date().toISOString(),
       type: data.type || 'unknown',
+      email_id: emailId,
       from: emailData.from || emailData.sender || '',
       to: emailData.to || '',
       subject: emailData.subject || '',
-      text: (emailData.text || emailData.plain || '').substring(0, 2000),
-      html: (emailData.html || '').substring(0, 5000),
-      raw_keys: Object.keys(emailData).join(',')
+      text: (fullText || '').substring(0, 2000),
+      html: (fullHtml || '').substring(0, 5000)
     }) + '\n';
     fs.appendFileSync(inboundLog, logEntry);
-    console.log('Inbound email saved. Type:', data.type, 'Keys:', Object.keys(emailData).join(','));
+    console.log('Inbound email saved. Type:', data.type, 'From:', emailData.from);
   } catch (logErr) {
     console.error('Failed to log inbound email:', logErr.message);
   }
