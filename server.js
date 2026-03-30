@@ -338,6 +338,22 @@ app.post('/inbound', express.json(), async (req, res) => {
   const data = req.body;
   console.log('Inbound email received:', JSON.stringify(data).substring(0, 500));
 
+  // Save inbound email to persistent log
+  try {
+    const inboundLog = path.join(DATA_DIR, 'inbound-emails.jsonl');
+    const logEntry = JSON.stringify({
+      timestamp: new Date().toISOString(),
+      from: data.from || '',
+      subject: data.subject || '',
+      text: (data.text || '').substring(0, 2000),
+      html: (data.html || '').substring(0, 5000)
+    }) + '\n';
+    fs.appendFileSync(inboundLog, logEntry);
+    console.log('Inbound email saved to log');
+  } catch (logErr) {
+    console.error('Failed to log inbound email:', logErr.message);
+  }
+
   // Loop prevention — aggressive
   const from = (data.from || '').toLowerCase();
   const subject = (data.subject || '').toLowerCase();
@@ -384,6 +400,22 @@ app.post('/inbound', express.json(), async (req, res) => {
   }
 
   res.json({ received: true });
+});
+
+// Internal API: get inbound emails (protected by simple key)
+app.get('/api/inbound', (req, res) => {
+  const key = req.query.key;
+  if (key !== process.env.INTERNAL_API_KEY) return res.status(403).json({ error: 'unauthorized' });
+  try {
+    const inboundLog = path.join(DATA_DIR, 'inbound-emails.jsonl');
+    if (!fs.existsSync(inboundLog)) return res.json({ emails: [] });
+    const lines = fs.readFileSync(inboundLog, 'utf8').trim().split('\n').filter(l => l);
+    const limit = parseInt(req.query.limit) || 20;
+    const emails = lines.slice(-limit).map(l => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
+    res.json({ count: lines.length, emails });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // Internal API: get scan log (protected by simple key)
