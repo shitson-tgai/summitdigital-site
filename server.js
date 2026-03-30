@@ -338,27 +338,31 @@ app.post('/inbound', express.json(), async (req, res) => {
   const data = req.body;
   console.log('Inbound email received:', JSON.stringify(data).substring(0, 500));
 
-  // Save inbound email to persistent log — capture full payload
+  // Save inbound email to persistent log — handle Resend webhook format
   try {
     const inboundLog = path.join(DATA_DIR, 'inbound-emails.jsonl');
+    // Resend sends { type, created_at, data: { ...email fields } }
+    const emailData = data.data || data;
     const logEntry = JSON.stringify({
       timestamp: new Date().toISOString(),
-      from: data.from || data.From || data.sender || '',
-      to: data.to || data.To || '',
-      subject: data.subject || data.Subject || '',
-      text: (data.text || data.Text || data.plain || '').substring(0, 2000),
-      html: (data.html || data.Html || data.HTML || '').substring(0, 5000),
-      raw_keys: Object.keys(data).join(',')
+      type: data.type || 'unknown',
+      from: emailData.from || emailData.sender || '',
+      to: emailData.to || '',
+      subject: emailData.subject || '',
+      text: (emailData.text || emailData.plain || '').substring(0, 2000),
+      html: (emailData.html || '').substring(0, 5000),
+      raw_keys: Object.keys(emailData).join(',')
     }) + '\n';
     fs.appendFileSync(inboundLog, logEntry);
-    console.log('Inbound email saved to log. Keys:', Object.keys(data).join(','));
+    console.log('Inbound email saved. Type:', data.type, 'Keys:', Object.keys(emailData).join(','));
   } catch (logErr) {
     console.error('Failed to log inbound email:', logErr.message);
   }
 
-  // Loop prevention — aggressive
-  const from = (data.from || '').toLowerCase();
-  const subject = (data.subject || '').toLowerCase();
+  // Loop prevention — aggressive (handle Resend webhook { type, data: {...} } format)
+  const emailPayload = data.data || data;
+  const from = (emailPayload.from || emailPayload.sender || '').toLowerCase();
+  const subject = (emailPayload.subject || '').toLowerCase();
   const isLoop = from.includes('summitwebaudit.com') ||
     from.includes('noreply') || from.includes('no-reply') || from.includes('donotreply') ||
     from.includes('mailer-daemon') || from.includes('postmaster') ||
