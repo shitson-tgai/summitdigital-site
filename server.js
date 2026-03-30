@@ -334,9 +334,15 @@ app.post('/api/capture-lead', express.json(), async (req, res) => {
 });
 
 // Inbound email webhook (Resend)
-app.post('/inbound', express.json(), async (req, res) => {
+app.post('/inbound', express.json({ limit: '10mb' }), async (req, res) => {
   const data = req.body;
   console.log('Inbound email received:', JSON.stringify(data).substring(0, 500));
+  
+  // Save raw webhook payload for debugging
+  try {
+    const rawLog = path.join(DATA_DIR, 'inbound-raw.jsonl');
+    fs.appendFileSync(rawLog, JSON.stringify({ timestamp: new Date().toISOString(), payload: data }) + '\n');
+  } catch(e) { console.error('Raw log error:', e.message); }
 
   // Save inbound email to persistent log — handle Resend webhook format
   try {
@@ -428,6 +434,22 @@ app.post('/inbound', express.json(), async (req, res) => {
   }
 
   res.json({ received: true });
+});
+
+// Internal API: get raw inbound webhook payloads (for debugging)
+app.get('/api/inbound-raw', (req, res) => {
+  const key = req.query.key;
+  if (key !== process.env.INTERNAL_API_KEY) return res.status(403).json({ error: 'unauthorized' });
+  try {
+    const rawLog = path.join(DATA_DIR, 'inbound-raw.jsonl');
+    if (!fs.existsSync(rawLog)) return res.json({ entries: [] });
+    const lines = fs.readFileSync(rawLog, 'utf8').trim().split('\n').filter(l => l);
+    const limit = parseInt(req.query.limit) || 10;
+    const entries = lines.slice(-limit).map(l => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
+    res.json({ count: lines.length, entries });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // Internal API: get inbound emails (protected by simple key)

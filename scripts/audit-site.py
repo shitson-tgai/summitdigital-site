@@ -79,7 +79,9 @@ def check_response(url):
     except Exception as e:
         results["errors"].append(str(e))
 
-    return results, resp if results["status_code"] else (results, None)
+    if results["status_code"]:
+        return results, resp
+    return results, None
 
 
 def make_check(id, name, category, status, severity, current_value, recommendation, how_to_fix):
