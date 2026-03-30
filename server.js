@@ -19,6 +19,19 @@ const SCANS_FILE = path.join(DATA_DIR, 'scans.csv');
 const SHARES_DIR = path.join(DATA_DIR, 'shares');
 if (!fs.existsSync(SHARES_DIR)) fs.mkdirSync(SHARES_DIR, { recursive: true });
 console.log(`Data directory: ${DATA_DIR} (persistent: ${fs.existsSync('/data')})`);
+
+// Seed suppression list on first deploy
+const SUPPRESSION_FILE_INIT = path.join(DATA_DIR, 'suppression-list.json');
+if (!fs.existsSync(SUPPRESSION_FILE_INIT)) {
+  const seedFile = path.join(__dirname, 'suppression-seed.json');
+  if (fs.existsSync(seedFile)) {
+    fs.copyFileSync(seedFile, SUPPRESSION_FILE_INIT);
+    console.log('Seeded suppression list from suppression-seed.json');
+  } else {
+    fs.writeFileSync(SUPPRESSION_FILE_INIT, '[]');
+  }
+}
+
 // Known page routes (only log these)
 const KNOWN_PAGES = ['/', '/check', '/blog', '/content', '/thank-you', '/order'];
 const BOT_PATTERNS = /bot|crawler|spider|scan|curl|python|go-http|wget|headless|phantom|selenium|scrapy|slurp|yahoo|bing|yandex|baidu|semrush|ahrefs|mj12|dotbot|petalbot|ahc\//i;
@@ -430,6 +443,42 @@ app.post('/inbound', express.json({ limit: '10mb' }), async (req, res) => {
     console.log('Inbound email saved. Type:', data.type, 'From:', emailData.from);
   } catch (logErr) {
     console.error('Failed to log inbound email:', logErr.message);
+  }
+
+  // Check suppression list (unsubscribed emails)
+  const SUPPRESSION_FILE = path.join(DATA_DIR, 'suppression-list.json');
+  let suppressionList = [];
+  try {
+    if (fs.existsSync(SUPPRESSION_FILE)) {
+      suppressionList = JSON.parse(fs.readFileSync(SUPPRESSION_FILE, 'utf8'));
+    }
+  } catch(e) { console.error('Suppression list read error:', e.message); }
+
+  // Check if sender wants to unsubscribe (check email body)
+  const bodyLower = (fullText || '').toLowerCase();
+  const unsubKeywords = ['remove me', 'unsubscribe', 'remove my email', 'stop emailing', 'opt out', 'take me off', 'do not contact', 'don\'t email', 'stop sending'];
+  const wantsUnsubscribe = unsubKeywords.some(kw => bodyLower.includes(kw));
+  
+  const emailPayloadForSuppression = data.data || data;
+  const senderEmail = (emailPayloadForSuppression.from || emailPayloadForSuppression.sender || '').toLowerCase().replace(/.*</, '').replace(/>.*/, '').trim();
+  
+  if (wantsUnsubscribe && senderEmail) {
+    // Add to suppression list
+    if (!suppressionList.includes(senderEmail)) {
+      suppressionList.push(senderEmail);
+      try {
+        fs.writeFileSync(SUPPRESSION_FILE, JSON.stringify(suppressionList, null, 2));
+        console.log(`Added ${senderEmail} to suppression list (unsubscribe request)`);
+      } catch(e) { console.error('Suppression write error:', e.message); }
+    }
+    // Don't auto-reply to unsubscribe requests
+    return res.json({ received: true, unsubscribed: true });
+  }
+
+  // Check if sender is on suppression list — don't auto-reply
+  if (senderEmail && suppressionList.includes(senderEmail)) {
+    console.log(`Skipping reply to suppressed email: ${senderEmail}`);
+    return res.json({ received: true, suppressed: true });
   }
 
   // Loop prevention — aggressive (handle Resend webhook { type, data: {...} } format)
