@@ -351,20 +351,65 @@ app.post('/inbound', express.json({ limit: '10mb' }), async (req, res) => {
     const emailData = data.data || data;
     const emailId = emailData.email_id || '';
     
-    // Try to fetch full email body from Resend API if we have an email_id
+    // Fetch full email body from Resend Received Email API
+    // Webhook only sends metadata — must call /emails/receiving/{id} for body
     let fullText = emailData.text || emailData.plain || '';
     let fullHtml = emailData.html || '';
     if (emailId && process.env.RESEND_API_KEY) {
       try {
         const fetch = require('node-fetch');
-        const resp = await fetch(`https://api.resend.com/emails/${emailId}`, {
+        // Step 1: Get the raw email download URL
+        const resp = await fetch(`https://api.resend.com/emails/receiving/${emailId}`, {
           headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}` }
         });
         if (resp.ok) {
-          const fullEmail = await resp.json();
-          fullText = fullEmail.text || fullText;
-          fullHtml = fullEmail.html || fullHtml;
-          console.log('Fetched full email body for', emailId);
+          const receivedEmail = await resp.json();
+          // receivedEmail has: { raw: { download_url, expires_at }, from, to, subject, ... }
+          if (receivedEmail.raw && receivedEmail.raw.download_url) {
+            // Step 2: Download raw email and parse it
+            const rawResp = await fetch(receivedEmail.raw.download_url);
+            if (rawResp.ok) {
+              const rawEmail = await rawResp.text();
+              // Extract text body from raw email (simple extraction)
+              // Look for the plain text part after headers
+              const boundaryMatch = rawEmail.match(/boundary="?([^"\r\n]+)"?/);
+              if (boundaryMatch) {
+                // Multipart email — find text/plain part
+                const parts = rawEmail.split('--' + boundaryMatch[1]);
+                for (const part of parts) {
+                  if (part.includes('Content-Type: text/plain')) {
+                    const bodyStart = part.indexOf('\r\n\r\n') || part.indexOf('\n\n');
+                    if (bodyStart > -1) {
+                      fullText = part.substring(bodyStart + 4).trim();
+                      // Remove trailing boundary markers
+                      fullText = fullText.replace(/--$/, '').trim();
+                    }
+                  }
+                  if (part.includes('Content-Type: text/html')) {
+                    const bodyStart = part.indexOf('\r\n\r\n') || part.indexOf('\n\n');
+                    if (bodyStart > -1) {
+                      fullHtml = part.substring(bodyStart + 4).trim();
+                      fullHtml = fullHtml.replace(/--$/, '').trim();
+                    }
+                  }
+                }
+              } else {
+                // Simple email — body after double newline
+                const headerEnd = rawEmail.indexOf('\r\n\r\n') || rawEmail.indexOf('\n\n');
+                if (headerEnd > -1) {
+                  fullText = rawEmail.substring(headerEnd + 4).trim();
+                }
+              }
+              console.log('Fetched full email body for', emailId, 'text length:', fullText.length);
+            }
+          } else {
+            // Fallback: check if response has direct fields
+            fullText = receivedEmail.text || fullText;
+            fullHtml = receivedEmail.html || fullHtml;
+            console.log('Got email metadata for', emailId, '(no raw download)');
+          }
+        } else {
+          console.log('Received email API returned', resp.status, 'for', emailId);
         }
       } catch (fetchErr) {
         console.log('Could not fetch email body:', fetchErr.message);
