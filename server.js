@@ -338,18 +338,20 @@ app.post('/inbound', express.json(), async (req, res) => {
   const data = req.body;
   console.log('Inbound email received:', JSON.stringify(data).substring(0, 500));
 
-  // Save inbound email to persistent log
+  // Save inbound email to persistent log — capture full payload
   try {
     const inboundLog = path.join(DATA_DIR, 'inbound-emails.jsonl');
     const logEntry = JSON.stringify({
       timestamp: new Date().toISOString(),
-      from: data.from || '',
-      subject: data.subject || '',
-      text: (data.text || '').substring(0, 2000),
-      html: (data.html || '').substring(0, 5000)
+      from: data.from || data.From || data.sender || '',
+      to: data.to || data.To || '',
+      subject: data.subject || data.Subject || '',
+      text: (data.text || data.Text || data.plain || '').substring(0, 2000),
+      html: (data.html || data.Html || data.HTML || '').substring(0, 5000),
+      raw_keys: Object.keys(data).join(',')
     }) + '\n';
     fs.appendFileSync(inboundLog, logEntry);
-    console.log('Inbound email saved to log');
+    console.log('Inbound email saved to log. Keys:', Object.keys(data).join(','));
   } catch (logErr) {
     console.error('Failed to log inbound email:', logErr.message);
   }
