@@ -857,6 +857,11 @@ app.get('/og/:id.png', async (req, res) => {
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Compare page
+app.get('/compare', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'compare.html'));
+});
+
 // Free checker page
 app.get('/check', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'check.html'));

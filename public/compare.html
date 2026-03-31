@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compare Websites Side by Side | Summit Web Audit</title>
+  <meta name="description" content="Compare two websites head-to-head. See which scores better on SEO, security, accessibility, and performance. Free instant comparison.">
+  <meta property="og:title" content="Website Comparison Tool — Summit Web Audit">
+  <meta property="og:description" content="See how your website stacks up against a competitor. Free side-by-side comparison.">
+  <link rel="canonical" href="https://summitwebaudit.com/compare">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+    .nav { background: #1e293b; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; }
+    .nav a { color: #60a5fa; text-decoration: none; font-weight: 600; }
+    .nav .logo { font-size: 20px; color: #fff; font-weight: 800; }
+    .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+    h1 { font-size: 2rem; text-align: center; margin-bottom: 8px; }
+    .subtitle { text-align: center; color: #94a3b8; margin-bottom: 32px; font-size: 1.1rem; }
+    .input-row { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+    .input-group { flex: 1; min-width: 250px; }
+    .input-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; }
+    .input-group label.yours { color: #60a5fa; }
+    .input-group label.theirs { color: #f59e0b; }
+    .input-group input { width: 100%; padding: 14px 16px; border: 2px solid #334155; border-radius: 10px; background: #1e293b; color: #fff; font-size: 16px; }
+    .input-group input:focus { outline: none; border-color: #60a5fa; }
+    .btn { display: block; width: 100%; max-width: 320px; margin: 0 auto 40px; padding: 16px; background: linear-gradient(135deg, #2563eb, #7c3aed); color: #fff; font-size: 18px; font-weight: 700; border: none; border-radius: 12px; cursor: pointer; transition: transform 0.2s; }
+    .btn:hover { transform: scale(1.02); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .results { display: none; }
+    .scores-row { display: flex; gap: 24px; margin-bottom: 32px; flex-wrap: wrap; }
+    .score-card { flex: 1; min-width: 250px; background: #1e293b; border-radius: 16px; padding: 24px; text-align: center; }
+    .score-card.yours { border: 2px solid #60a5fa; }
+    .score-card.theirs { border: 2px solid #f59e0b; }
+    .score-card .domain { font-size: 14px; color: #94a3b8; margin-bottom: 8px; word-break: break-all; }
+    .score-card .score { font-size: 64px; font-weight: 900; }
+    .score-card .score.green { color: #34d399; }
+    .score-card .score.yellow { color: #fbbf24; }
+    .score-card .score.red { color: #f87171; }
+    .score-card .label { font-size: 14px; color: #94a3b8; margin-top: 4px; }
+    .winner-banner { text-align: center; padding: 16px; border-radius: 12px; margin-bottom: 32px; font-size: 18px; font-weight: 700; }
+    .winner-banner.win { background: rgba(52,211,153,0.15); color: #34d399; border: 1px solid #34d399; }
+    .winner-banner.lose { background: rgba(248,113,113,0.15); color: #f87171; border: 1px solid #f87171; }
+    .winner-banner.tie { background: rgba(251,191,36,0.15); color: #fbbf24; border: 1px solid #fbbf24; }
+    .comparison-table { width: 100%; border-collapse: collapse; margin-bottom: 32px; }
+    .comparison-table th { text-align: left; padding: 12px; color: #94a3b8; font-size: 13px; text-transform: uppercase; border-bottom: 1px solid #334155; }
+    .comparison-table td { padding: 12px; border-bottom: 1px solid #1e293b; font-size: 15px; }
+    .comparison-table .check { color: #34d399; }
+    .comparison-table .fail { color: #f87171; }
+    .cta-box { background: linear-gradient(135deg, #1e3a5f, #2d1b69); border-radius: 16px; padding: 32px; text-align: center; margin-top: 32px; }
+    .cta-box h3 { font-size: 1.4rem; margin-bottom: 12px; }
+    .cta-box p { color: #94a3b8; margin-bottom: 20px; }
+    .cta-box a { display: inline-block; padding: 14px 32px; background: #2563eb; color: #fff; font-weight: 700; border-radius: 10px; text-decoration: none; font-size: 16px; }
+    .loading { text-align: center; padding: 40px; display: none; }
+    .loading .spinner { border: 4px solid #334155; border-top: 4px solid #60a5fa; border-radius: 50%; width: 48px; height: 48px; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @media (max-width: 600px) { h1 { font-size: 1.5rem; } .score-card .score { font-size: 48px; } }
+  </style>
+</head>
+<body>
+  <div class="nav">
+    <a href="/" class="logo">Summit Web Audit</a>
+    <div>
+      <a href="/check" style="margin-right: 16px;">Free Scan</a>
+      <a href="/blog">Blog</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <h1>⚔️ Website Head-to-Head</h1>
+    <p class="subtitle">See how your website stacks up against a competitor — SEO, security, accessibility & performance</p>
+
+    <div class="input-row">
+      <div class="input-group">
+        <label class="yours">🔵 Your Website</label>
+        <input type="text" id="url1" placeholder="yoursite.com" />
+      </div>
+      <div class="input-group">
+        <label class="theirs">🟡 Competitor</label>
+        <input type="text" id="url2" placeholder="competitor.com" />
+      </div>
+    </div>
+
+    <button class="btn" id="compareBtn" onclick="runCompare()">Compare Now — Free</button>
+
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <p>Scanning both sites... this takes about 10 seconds</p>
+    </div>
+
+    <div class="results" id="results">
+      <div class="winner-banner" id="winnerBanner"></div>
+
+      <div class="scores-row">
+        <div class="score-card yours">
+          <div class="domain" id="domain1"></div>
+          <div class="score" id="score1"></div>
+          <div class="label" id="issues1"></div>
+        </div>
+        <div class="score-card theirs">
+          <div class="domain" id="domain2"></div>
+          <div class="score" id="score2"></div>
+          <div class="label" id="issues2"></div>
+        </div>
+      </div>
+
+      <table class="comparison-table" id="compTable">
+        <thead>
+          <tr>
+            <th>Check</th>
+            <th>🔵 You</th>
+            <th>🟡 Competitor</th>
+          </tr>
+        </thead>
+        <tbody id="compBody"></tbody>
+      </table>
+
+      <div class="cta-box">
+        <h3>Want the full 50+ point audit with fix instructions?</h3>
+        <p>Get a detailed PDF report with step-by-step fixes for every issue. Just $9 — or $1 to try.</p>
+        <a href="https://buy.stripe.com/7sYeVfdxJ8HL4mN2ktes003" id="ctaLink">Get Full Audit — $9</a>
+        <br><br>
+        <a href="https://buy.stripe.com/cN27sN6519LP6uV8wGes004" style="color: #94a3b8; font-size: 14px;">Or try for $1 →</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function scanSite(url) {
+      const r = await fetch('/api/quick-check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url })
+      });
+      return r.json();
+    }
+
+    function scoreColor(s) {
+      if (s >= 70) return 'green';
+      if (s >= 40) return 'yellow';
+      return 'red';
+    }
+
+    function getDomain(url) {
+      try { return new URL(url.startsWith('http') ? url : 'https://' + url).hostname.replace('www.', ''); }
+      catch { return url; }
+    }
+
+    async function runCompare() {
+      const url1 = document.getElementById('url1').value.trim();
+      const url2 = document.getElementById('url2').value.trim();
+      if (!url1 || !url2) return alert('Please enter both URLs');
+
+      const btn = document.getElementById('compareBtn');
+      btn.disabled = true;
+      btn.textContent = 'Scanning...';
+      document.getElementById('loading').style.display = 'block';
+      document.getElementById('results').style.display = 'none';
+
+      try {
+        const [r1, r2] = await Promise.all([scanSite(url1), scanSite(url2)]);
+
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('results').style.display = 'block';
+
+        // Scores
+        const s1 = r1.score || 0, s2 = r2.score || 0;
+        document.getElementById('domain1').textContent = getDomain(url1);
+        document.getElementById('domain2').textContent = getDomain(url2);
+        document.getElementById('score1').textContent = s1 + '/100';
+        document.getElementById('score1').className = 'score ' + scoreColor(s1);
+        document.getElementById('score2').textContent = s2 + '/100';
+        document.getElementById('score2').className = 'score ' + scoreColor(s2);
+        document.getElementById('issues1').textContent = (r1.issuesFound || 0) + ' issues found';
+        document.getElementById('issues2').textContent = (r2.issuesFound || 0) + ' issues found';
+
+        // Winner
+        const banner = document.getElementById('winnerBanner');
+        if (s1 > s2) {
+          banner.className = 'winner-banner win';
+          banner.textContent = '🏆 Your site wins! But there\'s still room to improve.';
+        } else if (s2 > s1) {
+          banner.className = 'winner-banner lose';
+          banner.textContent = '⚠️ Your competitor scores higher. Time to fix your site.';
+        } else {
+          banner.className = 'winner-banner tie';
+          banner.textContent = '🤝 It\'s a tie! Both sites have room to improve.';
+        }
+
+        // Build comparison table
+        const allIssues = new Map();
+        (r1.freePreview || []).forEach(i => allIssues.set(i.issue, { you: false, them: true }));
+        (r2.freePreview || []).forEach(i => {
+          const existing = allIssues.get(i.issue);
+          if (existing) existing.them = false;
+          else allIssues.set(i.issue, { you: true, them: false });
+        });
+        // Invert: issues present = fail, absent = pass
+        const issues1Set = new Set((r1.freePreview || []).map(i => i.issue));
+        const issues2Set = new Set((r2.freePreview || []).map(i => i.issue));
+        const allChecks = new Set([...issues1Set, ...issues2Set]);
+
+        const tbody = document.getElementById('compBody');
+        tbody.innerHTML = '';
+        allChecks.forEach(check => {
+          const tr = document.createElement('tr');
+          const has1 = issues1Set.has(check);
+          const has2 = issues2Set.has(check);
+          tr.innerHTML = `
+            <td>${check}</td>
+            <td class="${has1 ? 'fail' : 'check'}">${has1 ? '❌ Issue' : '✅ Pass'}</td>
+            <td class="${has2 ? 'fail' : 'check'}">${has2 ? '❌ Issue' : '✅ Pass'}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        // Track comparison
+        fetch('/api/engage', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ event: 'compare', url1, url2, score1: s1, score2: s2 })
+        }).catch(() => {});
+
+      } catch (err) {
+        alert('Error scanning sites: ' + err.message);
+        document.getElementById('loading').style.display = 'none';
+      }
+
+      btn.disabled = false;
+      btn.textContent = 'Compare Again';
+    }
+
+    // Pre-fill from URL params
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('url1')) document.getElementById('url1').value = params.get('url1');
+    if (params.get('url2')) document.getElementById('url2').value = params.get('url2');
+    if (params.get('url1') && params.get('url2')) runCompare();
+  </script>
+</body>
+</html>
