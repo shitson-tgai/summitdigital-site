@@ -940,6 +940,10 @@ app.get('/blog/how-to-run-a-website-audit', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'blog', 'how-to-run-a-website-audit.html'));
 });
 
+app.get('/blog/compare-your-website-to-competitors', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'blog', 'compare-your-website-to-competitors.html'));
+});
+
 // Block common vulnerability probes
 app.use((req, res, next) => {
   const blocked = ['.env', 'wp-login', 'wp-admin', 'xmlrpc', 'wlwmanifest', '.git', '.sql', 'phpmyadmin'];
